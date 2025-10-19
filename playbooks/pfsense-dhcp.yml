@@ -1,0 +1,20 @@
+---
+- name: "PfSense DHCP einrichten"
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    pfsense_host: "192.168.1.1"
+    pfsense_user: "admin"
+    pfsense_pass: "pfsense"
+
+    dhcp_range_start: "192.168.1.100"
+    dhcp_range_end: "192.168.1.200"
+
+  tasks:
+    - name: Aktiviere DHCP auf LAN
+      ansible.builtin.shell: |
+        sshpass -p "{{ pfsense_pass }}" ssh -o StrictHostKeyChecking=no {{ pfsense_user }}@{{ pfsense_host }} \
+        "pfSsh.php playback enabledhcpd lan {{ dhcp_range_start }} {{ dhcp_range_end }}"
+      register: result
+      changed_when: true
