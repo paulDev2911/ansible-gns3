@@ -3,6 +3,21 @@
   hosts: localhost
   tasks:
 
+  - name: setup hostname and domain
+    pfsense_setup:
+      hostname: acme
+      domain: corp.com
+
+  - name: setup theme
+    pfsense_setup:
+      webguicss: pfSense-dark
+
+  - name: timezone and language
+    pfsense_setup:
+      timezone: Europe/Paris
+      language: fr
+      timeservers: 
+
   - name: Add interface
     pfsense_interface:
       descr: 
