@@ -1,20 +1,58 @@
 ---
 - name: "PfSense DHCP einrichten"
   hosts: localhost
-  gather_facts: false
-
-  vars:
-    pfsense_host: "192.168.1.1"
-    pfsense_user: "admin"
-    pfsense_pass: "pfsense"
-
-    dhcp_range_start: "192.168.1.100"
-    dhcp_range_end: "192.168.1.200"
-
   tasks:
-    - name: Aktiviere DHCP auf LAN
-      ansible.builtin.shell: |
-        sshpass -p "{{ pfsense_pass }}" ssh -o StrictHostKeyChecking=no {{ pfsense_user }}@{{ pfsense_host }} \
-        "pfSsh.php playback enabledhcpd lan {{ dhcp_range_start }} {{ dhcp_range_end }}"
-      register: result
-      changed_when: true
+
+  - name: Add interface
+    pfsense_interface:
+      descr: 
+      interface: 
+      ipv4_address:
+      ipv4_gateway:
+      ipv4_prefixlen: 24
+      ipv4_type: static
+      ipv6_address:
+      ipv6_gateway:
+      ipv6_prefixlen: 128
+      ipv6_type: static
+      enable: True
+
+  - name: Add  VLAN
+    pfsense_vlan:
+      interface: mvneta0
+      vlan_id: 100
+      descr: voice
+      priority: 5
+      state: present
+
+  - name: Configure DHCP server on IOT interface
+    pfsense_dhcp_server:
+      interface: IOT
+      enable: true
+      range_from: 192.168.1.100
+      range_to: 192.168.1.200
+      netmask: 255.255.255.0
+      gateway: 192.168.1.1
+      domain: example.com
+      defaultleasetime: 86400
+      maxleasetime: 172800
+
+- name: Enable DNS Resolver with some options
+  pfsense_dns_resolver:
+    state: present
+#    enablessl: true
+#    sslcert: "webConfigurator default"
+    dnssec: true
+    regdhcp: true
+#    regdhcpstatic: true
+  hosts:
+        - { host: test, domain: home.local, ip: 192.168.1.100, descr: "Example host override",
+            aliases: [{ host: test-admin, domain: home.local, description: "Example aliases" }] }
+  
+- name: Add operator user
+  pfsense_user:
+    name: operator
+    descr: Operator
+    scope: user
+    groups: [ 'Operators' ]
+    priv: [ 'page-all', 'user-shell-access' ]
