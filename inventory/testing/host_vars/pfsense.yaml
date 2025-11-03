@@ -1,0 +1,29 @@
+---
+#Basics
+hostname: "pfsense"
+domain: "test.local"
+timezone: "Europe/Berlin"
+language: "DE"
+timeservers: "pool.ntp.org"
+webgui_theme: "pfsense-dark"
+
+#interface-config
+interface_wan:
+  descr: "WAN"
+  interface: "vtnet0"
+  ipv4_type: "dhcp"
+  enable: true
+
+interface_lan:
+  descr: "LAN"
+  interface: "vtnet1"
+  ipv4_address: "192.168.1.1"
+  ipv4_prefixlen: 24
+  ipv4_type: "static"
+  enable: true
+
+vlan_mgmt:
+  interface:"mvneta0"
+  vlan_id: 100
+  descr: "management"
+  priority: 1
