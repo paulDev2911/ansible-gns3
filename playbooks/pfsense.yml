@@ -41,6 +41,15 @@
       priority: 5
       state: present
 
+  - name: Add  VLAN
+    pfsense_vlan:
+      interface: em1
+      vlan_id: 101
+      descr: printer
+      priority: 5
+      state: present
+    
+
   - name: Configure DHCP servers
     pfsense_dhcp_server:
         interface: "{{ item.interface }}"

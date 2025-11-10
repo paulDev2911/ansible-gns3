@@ -24,14 +24,14 @@ pfsense_interfaces:
 
   - descr: "DMZ Interface"
     interface: "em2"
-    ipv4_address: "172.16.1.1"
+    ipv4_address: "172.16.2.1"
     ipv4_gateway: ""
     ipv4_prefixlen: 24
     enable: true
   
-  - descr: "VLAN management"
+  - descr: "Management"
     interface: "em3"
-    ipv4_address: "172.16.2.1"
+    ipv4_address: "172.16.1.1"
     ipv4_prefixlen: 24
     ipv4_type: "static"
     enable: true
@@ -49,8 +49,8 @@ pfsense_dhcp_servers:
     
   - interface: "em2"
     enable: true
-    range_from: "172.16.1.100"
-    range_to: "172.16.1.200"
+    range_from: "172.16.2.100"
+    range_to: "172.16.2.200"
     netmask: "255.255.255.0"
     gateway: "172.16.1.1"
     domain: "{{ domain }}"
