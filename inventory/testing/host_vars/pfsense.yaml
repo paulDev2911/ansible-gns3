@@ -7,23 +7,55 @@ language: "DE"
 timeservers: "pool.ntp.org"
 webgui_theme: "pfsense-dark"
 
-#interface-config
-interface_wan:
-  descr: "WAN"
-  interface: "vtnet0"
-  ipv4_type: "dhcp"
-  enable: true
+pfsense_interfaces:
+  - descr: "LAN Interface"
+    interface: "em1"
+    ipv4_address: "192.168.1.1"
+    ipv4_gateway: ""
+    ipv4_prefixlen: 24
+    ipv6_address: "2001:db8::1"
+    ipv6_gateway: ""
+    enable: true
+    
+  - descr: "WAN Interface"
+    interface: "em0"
+    ipv4_type: dhcp
+    ipv6_type: slaac
+    enable: true
 
-interface_lan:
-  descr: "LAN"
-  interface: "vtnet1"
-  ipv4_address: "192.168.1.1"
-  ipv4_prefixlen: 24
-  ipv4_type: "static"
-  enable: true
+    
+  - descr: "DMZ Interface"
+    interface: "em2"
+    ipv4_address: "172.16.1.1"
+    ipv4_gateway: ""
+    ipv4_prefixlen: 24
+    enable: true
+  
+  - descr: "VLAN management"
+    interface: "em3"
+    ipv4_address: "172.16.2.1"
+    ipv4_prefixlen: 24
+    ipv4_type: "static"
+    enable: true
 
-vlan_mgmt:
-  interface:"mvneta0"
-  vlan_id: 100
-  descr: "management"
-  priority: 1
+pfsense_dhcp_servers:
+  - interface: "em1"
+    enable: true
+    range_from: "192.168.1.50"
+    range_to: "192.168.1.250"
+    netmask: "255.255.255.0"
+    gateway: "192.168.1.1"
+    domain: "{{ domain }}"
+    defaultleasetime: 86400
+    maxleasetime: 172800
+    
+  - interface: "em2"
+    enable: true
+    range_from: "172.16.1.100"
+    range_to: "172.16.1.200"
+    netmask: "255.255.255.0"
+    gateway: "172.16.1.1"
+    domain: "{{ domain }}"
+    defaultleasetime: 86400
+    maxleasetime: 172800
+    

@@ -3,54 +3,56 @@
   hosts: localhost
   tasks:
 
-  - name: setup hostname and domain
+  - name: Setup hostname and domain
     pfsense_setup:
-      hostname: acme
-      domain: corp.com
+      hostname: "{{hostname}}"
+      domain: "{{domain}}"
 
   - name: setup theme
     pfsense_setup:
-      webguicss: pfSense-dark
+      webguicss: "{{webgui_theme}}"
 
   - name: timezone and language
     pfsense_setup:
-      timezone: Europe/Paris
-      language: fr
-      timeservers: 
+      timezone: "{{timezone}}"
+      language: "{{language}}"
+      timeservers: "{{timeservers}}"
 
-  - name: Add interface
+  - name: Add multiple interfaces
     pfsense_interface:
-      descr: 
-      interface: 
-      ipv4_address:
-      ipv4_gateway:
-      ipv4_prefixlen: 24
-      ipv4_type: static
-      ipv6_address:
-      ipv6_gateway:
-      ipv6_prefixlen: 128
-      ipv6_type: static
-      enable: True
+        descr: "{{ item.descr }}"
+        interface: "{{ item.interface }}"
+        ipv4_address: "{{ item.ipv4_address | default(omit) }}"
+        ipv4_gateway: "{{ item.ipv4_gateway | default(omit) }}"
+        ipv4_prefixlen: "{{ item.ipv4_prefixlen | default(24) }}"
+        ipv4_type: "{{ item.ipv4_type | default('static') }}"
+        ipv6_address: "{{ item.ipv6_address | default(omit) }}"
+        ipv6_gateway: "{{ item.ipv6_gateway | default(omit) }}"
+        ipv6_prefixlen: "{{ item.ipv6_prefixlen | default(128) }}"
+        ipv6_type: "{{ item.ipv6_type | default('static') }}"
+        enable: "{{ item.enable | default(True) }}"
+    loop: "{{ pfsense_interfaces }}"
 
   - name: Add  VLAN
     pfsense_vlan:
-      interface: mvneta0
+      interface: em1
       vlan_id: 100
       descr: voice
       priority: 5
       state: present
 
-  - name: Configure DHCP server on IOT interface
+  - name: Configure DHCP servers
     pfsense_dhcp_server:
-      interface: IOT
-      enable: true
-      range_from: 192.168.1.100
-      range_to: 192.168.1.200
-      netmask: 255.255.255.0
-      gateway: 192.168.1.1
-      domain: example.com
-      defaultleasetime: 86400
-      maxleasetime: 172800
+        interface: "{{ item.interface }}"
+        enable: "{{ item.enable | default(true) }}"
+        range_from: "{{ item.range_from }}"
+        range_to: "{{ item.range_to }}"
+        netmask: "{{ item.netmask | default('255.255.255.0') }}"
+        gateway: "{{ item.gateway }}"
+        domain: "{{ item.domain | default('example.com') }}"
+        defaultleasetime: "{{ item.defaultleasetime | default(86400) }}"
+        maxleasetime: "{{ item.maxleasetime | default(172800) }}"
+    loop: "{{ pfsense_dhcp_servers }}"
 
 - name: Enable DNS Resolver with some options
   pfsense_dns_resolver:
