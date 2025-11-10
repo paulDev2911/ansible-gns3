@@ -1,5 +1,4 @@
 ---
-#Basics
 hostname: "pfsense"
 domain: "test.local"
 timezone: "Europe/Berlin"
@@ -16,14 +15,13 @@ pfsense_interfaces:
     ipv6_address: "2001:db8::1"
     ipv6_gateway: ""
     enable: true
-    
+
   - descr: "WAN Interface"
     interface: "em0"
     ipv4_type: dhcp
     ipv6_type: slaac
     enable: true
 
-    
   - descr: "DMZ Interface"
     interface: "em2"
     ipv4_address: "172.16.1.1"
@@ -58,4 +56,3 @@ pfsense_dhcp_servers:
     domain: "{{ domain }}"
     defaultleasetime: 86400
     maxleasetime: 172800
-    
