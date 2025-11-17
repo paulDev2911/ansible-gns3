@@ -35,6 +35,28 @@
     log: yes
     state: present
 
+- name: "Block DMZ to pfsense"
+  pfsense_rule:
+    name: "Block DMZ to pfsense"
+    action: block
+    interface: em2
+    ipprotocol: any
+    source: NET:em2
+    destination: '{{pfsense.ip}}'
+    log: yes
+    state: present
+
+- name: "Block LAN to pfsense"
+  pfsense_rule:
+    name: "Block LAN to pfsense"
+    action: block
+    interface: net:LAN
+    ipprotocol: any
+    source: NET:LAN
+    destination: '{{pfsense.ip}}'
+    log: yes
+    state: present
+
 - name: "Allow Internal DNS out"
   pfsense_rule:
     name: "Allow Internal DNS traffic out"
