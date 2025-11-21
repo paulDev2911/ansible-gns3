@@ -1,51 +1,54 @@
 ---
-- name: "Add Internal DNS out rule"
-  pfsense_rule:
-    name: 'Allow Internal DNS traffic out'
-    action: pass
-    interface: lan
-    ipprotocol: inet
-    protocol: udp
-    source: dns_int
-    destination: any
-    destination_port: 53
-    after: 'Allow proxies out'
-    state: present
+- name: "PfSense  Firewall einrichten"  
+  hosts: pfsense
+  tasks:
+  - name: "Add Internal DNS out rule"
+    pfsense_rule:
+      name: 'Allow Internal DNS traffic out'
+      action: pass
+      interface: lan
+      ipprotocol: inet
+      protocol: udp
+      source: dns_int
+      destination: any
+      destination_port: 53
+      after: 'Allow proxies out'
+      state: present
 
-- name: "Allow inbound port range"
-  pfsense_rule:
-    name: 'Allow inbound port range'
-    action: pass
-    interface: wan
-    ipprotocol: inet
-    protocol: tcp
-    source: any
-    destination: NET:lan
-    destination_port: 4000-5000
-    after: 'Allow Internal DNS traffic out'
-    state: present
+  - name: "Allow inbound port range"
+    pfsense_rule:
+      name: 'Allow inbound port range'
+      action: pass
+      interface: wan
+      ipprotocol: inet
+      protocol: tcp
+      source: any
+      destination: NET:lan
+      destination_port: 4000-5000
+      after: 'Allow Internal DNS traffic out'
+      state: present
 
-- name: "mgmt access"
-  pfsense_rule:
-    name: "mgmt access"
-    action: pass
-    interface: em3
-    ipprotocol: inet
-    protocol: any
-    source: em3
-    destination: any
-    destination_port: any
-    after: 'Allow mgmt in all'
-    state: present
+  - name: "mgmt access"
+    pfsense_rule:
+      name: "mgmt access"
+      action: pass
+      interface: em3
+      ipprotocol: inet
+      protocol: any
+      source: em3
+      destination: any
+      destination_port: any
+      after: 'Allow mgmt in all'
+      state: present
 
-- name: "DMZ access"
-  pfsense_rule:
-    name: "DMZ"
-    action: pass
-    interface: em2
-    protocol: any
-    source: em2
-    destination: wan
-    destination_port: any
-    after: 'Allow DMZ only outside'
-    state: present
+  - name: "DMZ access"
+    pfsense_rule:
+      name: "DMZ"
+      action: pass
+      interface: em2
+      protocol: any
+      source: em2
+      destination: wan
+      destination_port: any
+      after: 'Allow DMZ only outside'
+      state: present
