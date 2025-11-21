@@ -2,6 +2,8 @@
 ---
 - hosts: vpn_server
   become: true
+  collections:
+  - pfsensible.core
   tasks:
     - name: Install OpenVPN server packages
       package:

@@ -1,6 +1,8 @@
 ---
 - name: "PfSense  Firewall einrichten"  
   hosts: pfsense
+  collections:
+  - pfsensible.core
   tasks:
   - name: "Block LAN to DMZ"
     pfsense_rule:

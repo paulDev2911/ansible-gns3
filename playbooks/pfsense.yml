@@ -1,6 +1,8 @@
 ---
 - name: "PfSense DHCP einrichten"
-  hosts: localhost
+  hosts: pfsense
+  collections:
+  - pfsensible.core
   tasks:
 
   - name: "Install pfsense sudo package"
@@ -69,22 +71,20 @@
         maxleasetime: "{{ item.maxleasetime | default(172800) }}"
     loop: "{{ pfsense_dhcp_servers }}"
 
-- name: Enable DNS Resolver with some options
-  pfsense_dns_resolver:
-    state: present
-#    enablessl: true
-#    sslcert: "webConfigurator default"
-    dnssec: true
-    regdhcp: true
-#    regdhcpstatic: true
-  hosts:
-        - { host: test, domain: home.local, ip: 192.168.1.100, descr: "Example host override",
-            aliases: [{ host: test-admin, domain: home.local, description: "Example aliases" }] }
-  
-- name: Add operator user
-  pfsense_user:
-    name: operator
-    descr: Operator
-    scope: user
-    groups: [ 'Operators' ]
-    priv: [ 'page-all', 'user-shell-access' ]
+  - name: Enable DNS Resolver
+    pfsense_dns_resolver:
+      state: present
+      dnssec: true
+      regdhcp: true
+  #    regdhcpstatic: true
+      hosts:
+            - { host: test, domain: home.local, ip: 192.168.1.100, descr: "Example host override",
+                aliases: [{ host: test-admin, domain: home.local, description: "Example aliases" }] }
+    
+  - name: Add operator user
+    pfsense_user:
+      name: operator
+      descr: Operator
+      scope: user
+      groups: [ 'Operators' ]
+      priv: [ 'page-all', 'user-shell-access' ]
