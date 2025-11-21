@@ -3,7 +3,7 @@
   hosts: pfsense
   tasks:
   - name: "Block LAN to DMZ"
-  pfsense_rule:
+    pfsense_rule:
     name: "Block LAN to DMZ"
     action: block
     interface: lan
@@ -14,53 +14,53 @@
     log: yes
     state: present
 
-- name: "Block DMZ to LAN"
-  pfsense_rule:
-    name: "Block DMZ to LAN"
-    action: block
-    interface: em2
-    ipprotocol: inet
-    protocol: any
-    source: NET:em2
-    destination: NET:lan
-    log: yes
-    state: present
+  - name: "Block DMZ to LAN"
+    pfsense_rule:
+      name: "Block DMZ to LAN"
+      action: block
+      interface: em2
+      ipprotocol: inet
+      protocol: any
+      source: NET:em2
+      destination: NET:lan
+      log: yes
+      state: present
 
-- name: "Block DMZ to Management"
-  pfsense_rule:
-    name: "Block DMZ to Management"
-    action: block
-    interface: em2
-    ipprotocol: inet
-    protocol: any
-    source: NET:em2
-    destination: NET:em3
-    log: yes
-    state: present
+  - name: "Block DMZ to Management"
+    pfsense_rule:
+      name: "Block DMZ to Management"
+      action: block
+      interface: em2
+      ipprotocol: inet
+      protocol: any
+      source: NET:em2
+      destination: NET:em3
+      log: yes
+      state: present
 
-- name: "Block DMZ to pfsense"
-  pfsense_rule:
-    name: "Block DMZ to pfsense"
-    action: block
-    interface: em2
-    ipprotocol: any
-    source: NET:em2
-    destination: '{{pfsense.ip}}'
-    log: yes
-    state: present
+  - name: "Block DMZ to pfsense"
+    pfsense_rule:
+      name: "Block DMZ to pfsense"
+      action: block
+      interface: em2
+      ipprotocol: any
+      source: NET:em2
+      destination: '{{pfsense.ip}}'
+      log: yes
+      state: present
 
-- name: "Block LAN to pfsense"
-  pfsense_rule:
-    name: "Block LAN to pfsense"
-    action: block
-    interface: net:LAN
-    ipprotocol: any
-    source: NET:LAN
-    destination: '{{pfsense.ip}}'
-    log: yes
-    state: present
+  - name: "Block LAN to pfsense"
+    pfsense_rule:
+      name: "Block LAN to pfsense"
+      action: block
+      interface: net:LAN
+      ipprotocol: any
+      source: NET:LAN
+      destination: '{{pfsense.ip}}'
+      log: yes
+      state: present
 
-- name: "Allow Internal DNS out"
+  - name: "Allow Internal DNS out"
     pfsense_rule:
       name: "Allow Internal DNS traffic out"
       action: pass
@@ -70,30 +70,30 @@
       source: dns_int
       destination: any
       destination_port: '*' #53
-        state: present
+      state: present
 
-#- name: "Allow inbound to specific service"
-#  pfsense_rule:
-#    name: "Allow inbound to specific service"
-#    action: pass
-#    interface: wan
-#    ipprotocol: inet
-#    protocol: tcp
-#    source: any
-#    destination: 192.168.1.100
-#    destination_port: 4000
-#    log: yes
-#    after: 'Allow Internal DNS traffic out'
-#    state: present
+  #- name: "Allow inbound to specific service"
+  #  pfsense_rule:
+  #    name: "Allow inbound to specific service"
+  #    action: pass
+  #    interface: wan
+  #    ipprotocol: inet
+  #    protocol: tcp
+  #    source: any
+  #    destination: 192.168.1.100
+  #    destination_port: 4000
+  #    log: yes
+  #    after: 'Allow Internal DNS traffic out'
+  #    state: present
 
-- name: "Log all blocked traffic"
-  pfsense_rule:
-    name: "Log all blocked traffic"
-    action: block
-    interface: wan
-    ipprotocol: inet
-    protocol: any
-    source: any
-    destination: any
-    log: yes
-    state: present
+  - name: "Log all blocked traffic"
+    pfsense_rule:
+      name: "Log all blocked traffic"
+      action: block
+      interface: wan
+      ipprotocol: inet
+      protocol: any
+      source: any
+      destination: any
+      log: yes
+      state: present
