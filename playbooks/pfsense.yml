@@ -3,6 +3,12 @@
   hosts: localhost
   tasks:
 
+  - name: "Install pfsense sudo package"
+    package:
+      name:
+        - pfSense-pkg-sudo
+      state: present
+
   - name: Setup hostname and domain
     pfsense_setup:
       hostname: "{{hostname}}"
