@@ -3,22 +3,19 @@
   hosts: pfsense
   collections:
   - pfsensible.core
+  become: true
+  become_method: su
+  become_user: root
   tasks:
-
-  - name: "Install pfsense sudo package"
-    package:
-      name:
-        - pfSense-pkg-sudo
-      state: present
 
   - name: Setup hostname and domain
     pfsense_setup:
       hostname: "{{hostname}}"
       domain: "{{domain}}"
 
-  - name: setup theme
-    pfsense_setup:
-      webguicss: "{{webgui_theme}}"
+#  - name: setup theme
+#    pfsense_setup:
+#      webguicss: "{{webgui_theme}}"
 
   - name: timezone and language
     pfsense_setup:
@@ -86,5 +83,6 @@
       name: operator
       descr: Operator
       scope: user
+      password: password
       groups: [ 'Operators' ]
       priv: [ 'page-all', 'user-shell-access' ]

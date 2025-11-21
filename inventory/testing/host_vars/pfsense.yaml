@@ -2,18 +2,16 @@
 hostname: "pfsense"
 domain: "test.local"
 timezone: "Europe/Berlin"
-language: "DE"
+language: "de_DE"
 timeservers: "pool.ntp.org"
-webgui_theme: "pfsense-dark"
+#webgui_theme: "pfsense-dark"
 
 pfsense_interfaces:
   - descr: "LAN Interface"
     interface: "em1"
     ipv4_address: "192.168.1.1"
-    ipv4_gateway: ""
     ipv4_prefixlen: 24
     ipv6_address: "2001:db8::1"
-    ipv6_gateway: ""
     enable: true
 
   - descr: "WAN Interface"
@@ -25,7 +23,6 @@ pfsense_interfaces:
   - descr: "DMZ Interface"
     interface: "em2"
     ipv4_address: "172.16.2.1"
-    ipv4_gateway: ""
     ipv4_prefixlen: 24
     enable: true
   
