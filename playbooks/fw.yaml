@@ -4,15 +4,15 @@
   tasks:
   - name: "Block LAN to DMZ"
     pfsense_rule:
-    name: "Block LAN to DMZ"
-    action: block
-    interface: lan
-    ipprotocol: inet
-    protocol: any
-    source: NET:lan
-    destination: NET:em2
-    log: yes
-    state: present
+      name: "Block LAN to DMZ"
+      action: block
+      interface: lan
+      ipprotocol: inet
+      protocol: any
+      source: NET:lan
+      destination: NET:em2
+      log: yes
+      state: present
 
   - name: "Block DMZ to LAN"
     pfsense_rule:
