@@ -80,9 +80,9 @@
     
   - name: Add operator user
     pfsense_user:
-      name: operator
+      name: "{{ pfsense_admin_username }}"
       descr: Operator
       scope: user
-      password: password
+      password: "{{ pfsense_admin_password }}"
       groups: [ 'Operators' ]
       priv: [ 'page-all', 'user-shell-access' ]
