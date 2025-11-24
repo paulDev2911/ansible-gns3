@@ -29,7 +29,7 @@ pfsense_interfaces:
     ipv6_type: none
     enable: true
   
-  - descr: "Management"
+  - descr: "Management_Interface"
     interface: "em3"
     ipv4_address: "172.16.1.1"
     ipv4_prefixlen: 24
