@@ -1,53 +1,13 @@
-# playbook.yml
 ---
-- hosts: vpn_server
-  become: true
-  collections:
-  - pfsensible.core
-  tasks:
-    - name: Install OpenVPN server packages
-      package:
-        name: openvpn
-        state: present
-      tags:
-        - install
-        - vpn
-    - name: Generate server keys and certificates
-      command: ovpn-gen-keys --all
-      tags:
-        - configure
-        - vpn
-    - name: Copy client certificates to server
-      copy:
-        src: /path/to/your/client.crt
-        dest: /etc/openvpn/client.crt
-      tags:
-        - configure
-        - vpn
-    - name: Enable and start OpenVPN service
-      service:
-        name: openvpn
-        state: started
-        enabled: true
-      tags:
-        - start
-        - vpn
-
-- hosts: vpn_client
-  tasks:
-    - name: Download client configuration file
-      get_url:
-        url: http://your_vpn_server_ip/path/to/client.conf
-        dest: /etc/openvpn/client.conf
-      tags:
-        - configure
-        - vpn
-    - name: Start OpenVPN client service
-      service:
-        name: openvpn
-        state: started
-        enabled: true
-      tags:
-        - start
-        - vpn
-
+- name: "Add pfSense OpenVPN Client"
+  pfsense_openvpn_client:
+    name: 'Site2Site-Client'
+    server_addr: server-ip
+    server_port: 1194
+    protocol: udp
+    mode: peer_to_peer_tls
+    ca: my-ca
+    cert: my-client-cert
+    tunnel_network: 10.8.0.0/30
+    remote_network: 192.168.1.0/24
+    local_network: 192.168.1.0/24
