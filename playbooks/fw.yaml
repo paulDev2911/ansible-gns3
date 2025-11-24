@@ -12,7 +12,7 @@
       ipprotocol: inet
       protocol: any
       source: NET:lan
-      destination: NET:em2
+      destination: NET:DMZ_Interface
       log: yes
       state: present
 
@@ -20,10 +20,10 @@
     pfsense_rule:
       name: "Block DMZ to LAN"
       action: block
-      interface: em2
+      interface: DMZ_Interface
       ipprotocol: inet
       protocol: any
-      source: NET:em2
+      source: NET:DMZ_Interface
       destination: NET:lan
       log: yes
       state: present
@@ -32,11 +32,11 @@
     pfsense_rule:
       name: "Block DMZ to Management"
       action: block
-      interface: em2
+      interface: DMZ_Interface
       ipprotocol: inet
       protocol: any
-      source: NET:em2
-      destination: NET:em3
+      source: NET:DMZ_Interface
+      destination: NET:Management_Interface
       log: yes
       state: present
 
@@ -44,9 +44,9 @@
     pfsense_rule:
       name: "Block DMZ to pfsense"
       action: block
-      interface: em2
+      interface: DMZ_Interface
       ipprotocol: any
-      source: NET:em2
+      source: NET:DMZ_Interface
       destination: '{{pfsense.ip}}'
       log: yes
       state: present
