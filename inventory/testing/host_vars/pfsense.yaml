@@ -72,6 +72,7 @@ pfsense_management_ips:
   management: "172.16.1.1"
 
 firewall_rules:
+  # === MANAGEMENT ZONE - Full Access ===
   - name: "Allow Management to LAN"
     action: pass
     interface: Management_Interface
@@ -118,6 +119,7 @@ firewall_rules:
     destination: "172.16.1.1"
     destination_port: "22"
 
+  # === DMZ ZONE - Restricted ===
   - name: "Block DMZ to LAN"
     action: block
     interface: DMZ_Interface
@@ -180,6 +182,7 @@ firewall_rules:
     destination: any
     destination_port: "53"
 
+  # === LAN ZONE ===
   - name: "Block LAN to DMZ"
     action: block
     interface: lan
@@ -210,88 +213,90 @@ firewall_rules:
     source: NET:lan
     destination: any
 
+  # === VLAN PRINTER - Isolated ===
   - name: "Block Printer VLAN to LAN"
     action: block
-    interface: em1.10
+    interface: printer
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: NET:lan
 
   - name: "Block Printer VLAN to DMZ"
     action: block
-    interface: em1.10
+    interface: printer
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: NET:DMZ_Interface
 
   - name: "Block Printer VLAN to Management"
     action: block
-    interface: em1.10
+    interface: printer
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: NET:Management_Interface
 
   - name: "Block Printer VLAN to Voice VLAN"
     action: block
-    interface: em1.10
+    interface: printer
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: "192.168.20.0/24"
 
   - name: "Block Printer VLAN to pfSense"
     action: block
-    interface: em1.10
+    interface: printer
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: "192.168.10.1"
 
   - name: "Allow Printer VLAN Internet only"
     action: pass
-    interface: em1.10
+    interface: printer
     ipprotocol: inet
     protocol: tcp
     source: "192.168.10.0/24"
     destination: any
     destination_port: "80,443"
 
+  # === VLAN VOICE - Isolated ===
   - name: "Block Voice VLAN to LAN"
     action: block
-    interface: em1.20
+    interface: voice
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: NET:lan
 
   - name: "Block Voice VLAN to DMZ"
     action: block
-    interface: em1.20
+    interface: voice
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: NET:DMZ_Interface
 
   - name: "Block Voice VLAN to Management"
     action: block
-    interface: em1.20
+    interface: voice
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: NET:Management_Interface
 
   - name: "Block Voice VLAN to Printer VLAN"
     action: block
-    interface: em1.20
+    interface: voice
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: "192.168.10.0/24"
 
   - name: "Block Voice VLAN to pfSense"
     action: block
-    interface: em1.20
+    interface: voice
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: "192.168.20.1"
 
   - name: "Allow Voice VLAN SIP"
     action: pass
-    interface: em1.20
+    interface: voice
     ipprotocol: inet
     protocol: udp
     source: "192.168.20.0/24"
@@ -300,13 +305,14 @@ firewall_rules:
 
   - name: "Allow Voice VLAN RTP"
     action: pass
-    interface: em1.20
+    interface: voice
     ipprotocol: inet
     protocol: udp
     source: "192.168.20.0/24"
     destination: any
     destination_port: "10000:20000"
 
+  # === WAN ZONE - Default Deny ===
   - name: "Log all blocked WAN traffic"
     action: block
     interface: wan
