@@ -1,101 +1,19 @@
 ---
-- name: "PfSense  Firewall einrichten"  
+- name: "PfSense Firewall einrichten"  
   hosts: pfsense
   collections:
   - pfsensible.core
   tasks:
-  - name: "Block LAN to DMZ"
+  - name: "Create firewall rules"
     pfsense_rule:
-      name: "Block LAN to DMZ"
-      action: block
-      interface: lan
-      ipprotocol: inet
-      protocol: any
-      source: NET:lan
-      destination: NET:DMZ_Interface
-      log: yes
+      name: "{{ item.name }}"
+      action: "{{ item.action }}"
+      interface: "{{ item.interface }}"
+      ipprotocol: "{{ item.ipprotocol }}"
+      protocol: "{{ item.protocol | default('any') }}"
+      source: "{{ item.source }}"
+      destination: "{{ item.destination }}"
+      destination_port: "{{ item.destination_port | default(omit) }}"
+      log: "{{ item.log | default('yes') }}"
       state: present
-
-  - name: "Block DMZ to LAN"
-    pfsense_rule:
-      name: "Block DMZ to LAN"
-      action: block
-      interface: DMZ_Interface
-      ipprotocol: inet
-      protocol: any
-      source: NET:DMZ_Interface
-      destination: NET:lan
-      log: yes
-      state: present
-
-  - name: "Block DMZ to Management"
-    pfsense_rule:
-      name: "Block DMZ to Management"
-      action: block
-      interface: DMZ_Interface
-      ipprotocol: inet
-      protocol: any
-      source: NET:DMZ_Interface
-      destination: NET:Management_Interface
-      log: yes
-      state: present
-
-  - name: "Block DMZ to pfsense"
-    pfsense_rule:
-      name: "Block DMZ to pfsense"
-      action: block
-      interface: DMZ_Interface
-      ipprotocol: any
-      source: NET:DMZ_Interface
-      destination: '{{pfsense.ip}}'
-      log: yes
-      state: present
-
-  - name: "Block LAN to pfsense"
-    pfsense_rule:
-      name: "Block LAN to pfsense"
-      action: block
-      interface: net:LAN
-      ipprotocol: any
-      source: NET:LAN
-      destination: '{{pfsense.ip}}'
-      log: yes
-      state: present
-
-  - name: "Allow Internal DNS out"
-    pfsense_rule:
-      name: "Allow Internal DNS traffic out"
-      action: pass
-      interface: lan
-      ipprotocol: inet
-      protocol: udp
-      source: dns_int
-      destination: any
-      destination_port: '*' #53
-      state: present
-
-  #- name: "Allow inbound to specific service"
-  #  pfsense_rule:
-  #    name: "Allow inbound to specific service"
-  #    action: pass
-  #    interface: wan
-  #    ipprotocol: inet
-  #    protocol: tcp
-  #    source: any
-  #    destination: 192.168.1.100
-  #    destination_port: 4000
-  #    log: yes
-  #    after: 'Allow Internal DNS traffic out'
-  #    state: present
-
-  - name: "Log all blocked traffic"
-    pfsense_rule:
-      name: "Log all blocked traffic"
-      action: block
-      interface: wan
-      ipprotocol: inet
-      protocol: any
-      source: any
-      destination: any
-      log: yes
-      state: present
+    loop: "{{ firewall_rules }}"

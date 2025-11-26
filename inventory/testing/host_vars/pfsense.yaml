@@ -65,3 +65,61 @@ vlans:
   - vlan_id: 20
     descr: "voice"
     ip: "192.168.20.1"
+
+pfsense_management_ips:
+  lan: "192.168.1.1"
+  dmz: "172.16.2.1"
+  management: "172.16.1.1"
+
+
+firewall_rules:
+  - name: "Block LAN to DMZ"
+    action: block
+    interface: lan
+    ipprotocol: inet
+    source: NET:lan
+    destination: NET:DMZ_Interface
+
+  - name: "Block DMZ to LAN"
+    action: block
+    interface: DMZ_Interface
+    ipprotocol: inet
+    source: NET:DMZ_Interface
+    destination: NET:lan
+
+  - name: "Block DMZ to Management"
+    action: block
+    interface: DMZ_Interface
+    ipprotocol: inet
+    source: NET:DMZ_Interface
+    destination: NET:Management_Interface
+
+  - name: "Block DMZ to pfsense"
+    action: block
+    interface: DMZ_Interface
+    ipprotocol: any
+    source: NET:DMZ_Interface
+    destination: "{{ pfsense_ips.dmz }}"
+
+  - name: "Block LAN to pfsense mgmt"
+    action: block
+    interface: lan
+    ipprotocol: any
+    source: NET:lan
+    destination: "{{ pfsense_ips.lan }}"
+
+  - name: "Allow Internal DNS out"
+    action: pass
+    interface: lan
+    ipprotocol: inet
+    protocol: udp
+    source: dns_int
+    destination: any
+    destination_port: "53"
+
+  - name: "Log all blocked WAN traffic"
+    action: block
+    interface: wan
+    ipprotocol: inet
+    source: any
+    destination: any
