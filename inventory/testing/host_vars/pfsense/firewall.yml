@@ -173,15 +173,6 @@ firewall_rules:
     source: "192.168.10.0/24"
     destination: "192.168.10.1"
 
-  - name: "Allow Printer VLAN Internet only"
-    action: pass
-    interface: printer
-    ipprotocol: inet
-    protocol: tcp
-    source: "192.168.10.0/24"
-    destination: any
-    destination_port: "80,443"
-
   - name: "Block Voice VLAN to LAN"
     action: block
     interface: voice
@@ -216,24 +207,6 @@ firewall_rules:
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: "192.168.20.1"
-
-  - name: "Allow Voice VLAN SIP"
-    action: pass
-    interface: voice
-    ipprotocol: inet
-    protocol: udp
-    source: "192.168.20.0/24"
-    destination: any
-    destination_port: "5060,5061"
-
-  - name: "Allow Voice VLAN RTP"
-    action: pass
-    interface: voice
-    ipprotocol: inet
-    protocol: udp
-    source: "192.168.20.0/24"
-    destination: any
-    destination_port: "10000:20000"
 
   - name: "Log all blocked WAN traffic"
     action: block
