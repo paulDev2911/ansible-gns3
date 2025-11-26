@@ -1,0 +1,13 @@
+---
+vlans:
+  - vlan_id: 10
+    descr: "printer"
+    ip: "192.168.10.1"
+  - vlan_id: 20
+    descr: "voice"
+    ip: "192.168.20.1"
+
+pfsense_management_ips:
+  lan: "192.168.1.1"
+  dmz: "172.16.2.1"
+  management: "172.16.1.1"

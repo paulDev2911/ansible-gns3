@@ -1,78 +1,5 @@
 ---
-hostname: "pfsense"
-domain: "test.local"
-timezone: "Europe/Berlin"
-language: "de_DE"
-timeservers: "pool.ntp.org"
-pfsense_admin_username: admin
-pfsense_admin_password: "$2a$12$u/3KWu3C1QY5/UGHEiT6k.b7qzhmKfvXIEpVDRKjn0hiRsH7yHQrW"
-#webgui_theme: "pfsense-dark"
-
-pfsense_interfaces:
-  - descr: "LAN_Interface"
-    interface: "em1"
-    ipv4_address: "192.168.1.1"
-    ipv4_prefixlen: 24
-    ipv6_address: "2001:db8::1"
-    enable: true
-
-  - descr: "WAN_Interface"
-    interface: "em0"
-    ipv4_type: dhcp
-    ipv6_type: slaac
-    enable: true
-
-  - descr: "DMZ_Interface"
-    interface: "em2"
-    ipv4_address: "172.16.2.1"
-    ipv4_prefixlen: 24
-    ipv6_type: none
-    enable: true
-  
-  - descr: "Management_Interface"
-    interface: "em3"
-    ipv4_address: "172.16.1.1"
-    ipv4_prefixlen: 24
-    ipv4_type: "static"
-    ipv6_type: none
-    enable: true
-
-pfsense_dhcp_servers:
-  - interface: "em1"
-    enable: true
-    range_from: "192.168.1.50"
-    range_to: "192.168.1.250"
-    netmask: "255.255.255.0"
-    gateway: "192.168.1.1"
-    domain: "{{ domain }}"
-    defaultleasetime: 86400
-    maxleasetime: 172800
-    
-  - interface: "em2"
-    enable: true
-    range_from: "172.16.2.100"
-    range_to: "172.16.2.200"
-    netmask: "255.255.255.0"
-    gateway: "172.16.1.1"
-    domain: "{{ domain }}"
-    defaultleasetime: 86400
-    maxleasetime: 172800
-
-vlans:
-  - vlan_id: 10
-    descr: "printer"
-    ip: "192.168.10.1"
-  - vlan_id: 20
-    descr: "voice"
-    ip: "192.168.20.1"
-
-pfsense_management_ips:
-  lan: "192.168.1.1"
-  dmz: "172.16.2.1"
-  management: "172.16.1.1"
-
 firewall_rules:
-  # === MANAGEMENT ZONE - Full Access ===
   - name: "Allow Management to LAN"
     action: pass
     interface: Management_Interface
@@ -119,7 +46,6 @@ firewall_rules:
     destination: "172.16.1.1"
     destination_port: "22"
 
-  # === DMZ ZONE - Restricted ===
   - name: "Block DMZ to LAN"
     action: block
     interface: DMZ_Interface
@@ -182,7 +108,6 @@ firewall_rules:
     destination: any
     destination_port: "53"
 
-  # === LAN ZONE ===
   - name: "Block LAN to DMZ"
     action: block
     interface: lan
@@ -213,7 +138,6 @@ firewall_rules:
     source: NET:lan
     destination: any
 
-  # === VLAN PRINTER - Isolated ===
   - name: "Block Printer VLAN to LAN"
     action: block
     interface: printer
@@ -258,7 +182,6 @@ firewall_rules:
     destination: any
     destination_port: "80,443"
 
-  # === VLAN VOICE - Isolated ===
   - name: "Block Voice VLAN to LAN"
     action: block
     interface: voice
@@ -312,7 +235,6 @@ firewall_rules:
     destination: any
     destination_port: "10000:20000"
 
-  # === WAN ZONE - Default Deny ===
   - name: "Log all blocked WAN traffic"
     action: block
     interface: wan
