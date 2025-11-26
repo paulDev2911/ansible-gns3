@@ -1,5 +1,5 @@
 ---
-- name: "Setup VLAN on pfSense"
+- name: "Setup VLANs on pfSense"
   hosts: pfsense
   gather_facts: false
   collections:
@@ -7,20 +7,21 @@
 
   tasks:
 
-  - name: "Create VLAN on LAN interface"
+  - name: "Create VLANs"
     pfsense_vlan:
-      interface: "em1"           # Physisches Interface, NICHT NET:lan
-      vlan_id: 10
-      descr: "printer"
-      # mtu wird nicht unterstützt - entfernt
+      interface: "em1"
+      vlan_id: "{{ item.vlan_id }}"
+      descr: "{{ item.descr }}"
       state: present
+    loop: "{{ vlans }}"
 
-  - name: "Assign VLAN interface"
+  - name: "Assign VLAN interfaces"
     pfsense_interface:
-      interface: "em1.10"        # Format: interface.vlan_id
-      descr: "printer"
+      interface: "em1.{{ item.vlan_id }}"
+      descr: "{{ item.descr }}"
       enable: true
       ipv4_type: static
-      ipv4_address: "192.168.10.1"    # Nicht ipv4_addr
-      ipv4_prefixlen: 24              # Nicht ipv4_subnetmask
+      ipv4_address: "{{ item.ip }}"
+      ipv4_prefixlen: 24
       state: present
+    loop: "{{ vlans }}"
