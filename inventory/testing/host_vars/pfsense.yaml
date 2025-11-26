@@ -99,14 +99,14 @@ firewall_rules:
     interface: DMZ_Interface
     ipprotocol: any
     source: NET:DMZ_Interface
-    destination: "{{ pfsense_ips.dmz }}"
+    destination: "172.16.2.1"
 
   - name: "Block LAN to pfsense mgmt"
     action: block
     interface: lan
     ipprotocol: any
     source: NET:lan
-    destination: "{{ pfsense_ips.lan }}"
+    destination: "192.168.1.1"
 
   - name: "Allow Internal DNS out"
     action: pass
