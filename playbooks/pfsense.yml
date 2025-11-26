@@ -77,6 +77,16 @@
       hosts:
             - { host: test, domain: home.local, ip: 192.168.1.100, descr: "Example host override",
                 aliases: [{ host: test-admin, domain: home.local, description: "Example aliases" }] }
+
+  - name: Create Operators group
+    pfsense_group:
+      name: Operators
+      scope: local
+      descr: "Operators group with limited privileges"
+      priv:
+        - page-all
+        - user-shell-access
+      state: present
     
   - name: Add operator user
     pfsense_user:
