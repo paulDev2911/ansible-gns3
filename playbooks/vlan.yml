@@ -9,16 +9,18 @@
 
   - name: "Create VLAN on LAN interface"
     pfsense_vlan:
-      interface: "NET:lan"
-      vlan: 10
+      interface: "em1"           # Physisches Interface, NICHT NET:lan
+      vlan_id: 10
       descr: "printer"
-      mtu: 1500
+      # mtu wird nicht unterstützt - entfernt
+      state: present
 
   - name: "Assign VLAN interface"
     pfsense_interface:
-      interface: "vlan10"
+      interface: "em1.10"        # Format: interface.vlan_id
       descr: "printer"
       enable: true
       ipv4_type: static
-      ipv4_addr: "192.168.10.1"
-      ipv4_subnetmask: "24"
+      ipv4_address: "192.168.10.1"    # Nicht ipv4_addr
+      ipv4_prefixlen: 24              # Nicht ipv4_subnetmask
+      state: present
