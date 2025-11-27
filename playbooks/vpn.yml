@@ -1,13 +1,72 @@
 ---
-- name: "Add pfSense OpenVPN Client"
-  pfsense_openvpn_client:
-    name: 'Site2Site-Client'
-    server_addr: server-ip
-    server_port: 1194
-    protocol: udp
-    mode: peer_to_peer_tls
-    ca: my-ca
-    cert: my-client-cert
-    tunnel_network: 10.8.0.0/30
-    remote_network: 192.168.1.0/24
-    local_network: 192.168.1.0/24
+- name: Configure OpenVPN Site-to-Site Client
+  hosts: pfsense
+  gather_facts: no
+  vars:
+    pfsense_host: "192.168.1.1"
+    ca_cert: "{{ lookup('file', 'certs/my-ca.crt') }}"
+    client_cert: "{{ lookup('file', 'certs/client-cert.crt') }}"
+    client_key: "{{ lookup('file', 'certs/client-cert.key') }}"
+    
+  tasks:
+    - name: Import CA Certificate
+      pfsense_ca:
+        name: "Site2Site-CA"
+        certificate: "{{ ca_cert }}"
+        state: present
+
+    - name: Import Client Certificate
+      pfsense_cert:
+        name: "Site2Site-Client-Cert"
+        certificate: "{{ client_cert }}"
+        privatekey: "{{ client_key }}"
+        ca: "Site2Site-CA"
+        state: present
+
+    - name: Configure OpenVPN Client
+      pfsense_openvpn_client:
+        name: "Site2Site-Client"
+        state: present
+        
+        server_addr: "192.168.122.116"
+        server_port: 1194
+        protocol: udp4
+        dev_mode: tun
+        mode: peer_to_peer_tls
+
+        interface: wan
+        
+        ca: "Site2Site-CA"
+        cert: "Site2Site-Client-Cert"
+
+        tunnel_network: "10.8.0.0/30"
+        remote_network: "192.168.2.0/24"
+        local_network: "192.168.1.0/24"
+        
+        data_ciphers: "AES-256-GCM:AES-256-CBC"
+        data_ciphers_fallback: "AES-256-CBC"
+        digest: "SHA256"
+        
+        compression: "adaptive"
+        verbosity_level: 3
+        
+#    - name: Allow all traffic on OpenVPN interface
+#      pfsense_rule:
+#        name: "Allow OpenVPN Site2Site"
+#        action: pass
+#        interface: openvpn
+#        protocol: any
+#        source: any
+#        destination: any
+#        state: present
+
+#    - name: Allow outgoing OpenVPN connection on WAN
+#      pfsense_rule:
+#        name: "Allow OpenVPN Client to Server"
+#        action: pass
+#        interface: wan
+#        protocol: udp
+#        source: any
+#        destination: "192.168.122.116"
+#        destination_port: 1194
+#        state: present
