@@ -1,2 +1,5 @@
 [pfsense]
 pfsense ansible_host=192.168.1.1 ansible_user=admin
+
+#[switch01] 
+#allowed_trunk_ports= "105 106 111 122" 
