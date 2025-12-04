@@ -3,7 +3,7 @@
   hosts: switches
   gather_facts: false
   collections:
-    - pfsensible.core
+    - cisco.ios
 
   tasks:
 
@@ -16,8 +16,6 @@
           shutdown: disabled
       state: overridden
     loop: "{{ vlans }}"
-
-
 
   - name: Configure trunk ports
     ios_config:

@@ -7,7 +7,6 @@
     ca_cert: "{{ lookup('file', 'certs/my-ca.crt') }}"
     client_cert: "{{ lookup('file', 'certs/client-cert.crt') }}"
     client_key: "{{ lookup('file', 'certs/client-cert.key') }}"
-    
   tasks:
     - name: Import CA Certificate
       pfsense_ca:

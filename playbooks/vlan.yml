@@ -4,7 +4,6 @@
   gather_facts: false
   collections:
     - pfsensible.core
-
   tasks:
 
   - name: "Create VLANs"

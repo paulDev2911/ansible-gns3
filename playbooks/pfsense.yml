@@ -13,10 +13,6 @@
       hostname: "{{hostname}}"
       domain: "{{domain}}"
 
-#  - name: setup theme
-#    pfsense_setup:
-#      webguicss: "{{webgui_theme}}"
-
   - name: timezone and language
     pfsense_setup:
       timezone: "{{timezone}}"
@@ -73,7 +69,6 @@
       state: present
       dnssec: true
       regdhcp: true
-  #    regdhcpstatic: true
       hosts:
             - { host: test, domain: home.local, ip: 192.168.1.100, descr: "Example host override",
                 aliases: [{ host: test-admin, domain: home.local, description: "Example aliases" }] }
