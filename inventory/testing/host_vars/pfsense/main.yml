@@ -37,6 +37,14 @@ pfsense_interfaces:
     ipv6_type: none
     enable: true
 
+  - descr: "VPN_Interface"
+    interface: "em4"
+    ipv4_address: "10.1.1.10"
+    ipv4_prefixlen: 24
+    ipv4_type: "static"
+    ipv6_type: none
+    enable: true
+
 pfsense_dhcp_servers:
   - interface: "em1"
     enable: true
