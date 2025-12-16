@@ -1,1 +1,1 @@
-psec_shares_secret: "secret_shared_key"
+ipsec_shared_secret: "secret_shared_key"
