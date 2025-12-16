@@ -1,26 +1,95 @@
 ---
-- name: Configure OpenVPN Site-to-Site Client
+- name: "IPSec VPN zum bestehenden Standort"
   hosts: pfsense
-  gather_facts: no
+  gather_facts: false
+  collections:
+    - pfsensible.core
+  
   tasks:
-  - name: Add VPN Tunnel
-    pfsense_ipsec:
-      state: present
-      descr: site-to-site-tunnel
-      interface: VPN_Interface
-      remote_gateway: 10.10.10.2
-      iketype: ikev2
-      authentication_method: pre_shared_key
-      preshared_key: "{{ ipsec_shares_secret }}"
+    - name: "Configure IPSec Phase 1 (IKE)"
+      pfsense_ipsec:
+        state: present
+        descr: "VPN-to-existing-site"
+        interface: "VPN_Interface"
+        remote_gateway: "10.1.1.10"
+        iketype: "ikev2"
+        authentication_method: "pre_shared_key"
+        preshared_key: "iwas"
+        myid_type: "address"
+        myid_data: "10.1.1.20"
+        peerid_type: "address"
+        peerid_data: "10.1.1.10"
+        lifetime: 28800
+        nat_traversal: "force"
+        dpd_delay: 10
+        dpd_maxfail: 5
 
-  - name: Add simple phase2
-    pfsense_ipsec_p2:
-      p1_descr: site-to-site-tunnel
-      descr: site-to-site-tunnel_p2
-      state: present
-      mode: vti
-      local: 10.10.10.10
-      remote: 10.10.10.2
-      aes: True
-      aes_len: auto
-      sha256: True
+    - name: "Configure IPSec Phase 2 (ESP)"
+      pfsense_ipsec_p2:
+        p1_descr: "VPN-to-existing-site"
+        descr: "VPN-to-existing-site-P2"
+        state: present
+        mode: "tunnel"
+        protocol: "esp"
+        local: "192.168.1.0/24"
+        remote: "192.168.2.0/24"
+        aes: true
+        aes256: true
+        sha256: true
+        pfsgroup: 14
+        lifetime: 3600
+
+    - name: "Allow IKE (UDP 500)"
+      pfsense_rule:
+        name: "Allow IKE from existing site"
+        action: pass
+        interface: "VPN_Interface"
+        ipprotocol: inet
+        protocol: udp
+        source: "10.1.1.10"
+        destination: "10.1.1.20"
+        destination_port: "500"
+        state: present
+
+    - name: "Allow NAT-T (UDP 4500)"
+      pfsense_rule:
+        name: "Allow NAT-T from existing site"
+        action: pass
+        interface: "VPN_Interface"
+        ipprotocol: inet
+        protocol: udp
+        source: "10.1.1.10"
+        destination: "10.1.1.20"
+        destination_port: "4500"
+        state: present
+
+    - name: "Allow IPSec ESP"
+      pfsense_rule:
+        name: "Allow ESP from existing site"
+        action: pass
+        interface: "VPN_Interface"
+        ipprotocol: inet
+        protocol: esp
+        source: "10.1.1.10"
+        destination: "10.1.1.20"
+        state: present
+
+    - name: "Allow traffic through tunnel from existing site"
+      pfsense_rule:
+        name: "Allow existing site to new site"
+        action: pass
+        interface: IPsec
+        ipprotocol: inet
+        source: "192.168.2.0/24"
+        destination: "192.168.1.0/24"
+        state: present
+
+    - name: "Allow LAN to existing site through VPN"
+      pfsense_rule:
+        name: "Allow new site to existing site"
+        action: pass
+        interface: lan
+        ipprotocol: inet
+        source: "192.168.1.0/24"
+        destination: "192.168.2.0/24"
+        state: present
