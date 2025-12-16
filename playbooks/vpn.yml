@@ -34,11 +34,11 @@
         local: "192.168.1.0/24"
         remote: "192.168.2.0/24"
         aes: true
-        aes256: true
+        aes_len: auto
         sha256: true
         pfsgroup: 14
         lifetime: 3600
-
+        
     - name: "Allow IKE (UDP 500)"
       pfsense_rule:
         name: "Allow IKE from existing site"
