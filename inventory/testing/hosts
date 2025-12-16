@@ -3,3 +3,9 @@ pfsense ansible_host=192.168.1.1 ansible_user=admin ansible_ssh_pass=pfsense
 
 #[switch01] 
 #allowed_trunk_ports= "105 106 111 122" 
+
+[pfsense_site_a]
+pfsense-site-a ansible_host=192.168.1.1 ansible_user=admin ansible_password="{{ vault_pfsense_password }}"
+
+[pfsense_site_b]
+pfsense-site-b ansible_host=<IP_DER_ZWEITEN_PFSENSE> ansible_user=admin ansible_password="{{ vault_pfsense_password_site_b }}"
