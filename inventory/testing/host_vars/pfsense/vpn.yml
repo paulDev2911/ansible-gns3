@@ -1,1 +1,64 @@
-ipsec_shared_secret: "secret_shared_key"
+---
+site_description: "VPN-to-existing-site"
+local_site_name: "new-site"
+remote_site_name: "existing-site"
+
+vpn_interface: "VPN_Interface"
+lan_interface: "lan"
+ipsec_interface: "IPsec"
+
+local_gateway: "10.1.1.20"
+remote_gateway: "10.1.1.10"
+
+ike_version: "ikev2"
+authentication_method: "pre_shared_key"
+preshared_key: "iwas"
+myid_type: "address"
+myid_data: "{{ local_gateway }}"
+peerid_type: "address"
+peerid_data: "{{ remote_gateway }}"
+phase1_lifetime: 28800
+nat_traversal: "force"
+dpd_delay: 10
+dpd_maxfail: 5
+
+tunnel_mode: "tunnel"
+esp_protocol: "esp"
+phase2_encryption: true
+phase2_aes_length: "auto"
+phase2_hash: true
+pfs_group: 14
+phase2_lifetime: 3600
+
+local_network: "192.168.1.0/24"
+
+remote_network: "192.168.2.0/24"
+
+firewall_rules:
+  - name: "Allow IKE from {{ remote_site_name }}"
+    protocol: "udp"
+    port: "500"
+    description: "IKE negotiation traffic"
+  
+  - name: "Allow NAT-T from {{ remote_site_name }}"
+    protocol: "udp"
+    port: "4500"
+    description: "NAT Traversal for IPSec"
+  
+  - name: "Allow ESP from {{ remote_site_name }}"
+    protocol: "esp"
+    port: null
+    description: "ESP protocol for IPSec tunnel"
+
+tunnel_traffic_rules:
+  remote_to_local:
+    name: "Allow {{ remote_site_name }} to {{ local_site_name }}"
+    source: "{{ remote_network }}"
+    destination: "{{ local_network }}"
+    interface: "{{ ipsec_interface }}"
+  
+  local_to_remote:
+    name: "Allow {{ local_site_name }} to {{ remote_site_name }}"
+    source: "{{ local_network }}"
+    destination: "{{ remote_network }}"
+    interface: "{{ lan_interface }}"
