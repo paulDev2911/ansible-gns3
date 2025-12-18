@@ -2,7 +2,7 @@
 pfsense ansible_host=192.168.1.1 ansible_user=admin ansible_ssh_pass=pfsense
 
 [switches] 
-switch1 ansible_host=172.16.1.11 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports= "105 106 111 122" 
-switch2 ansible_host=172.16.1.12 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports= "105 106 111 122" 
-switch3 ansible_host=172.16.1.13 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports= "105 106 111 122" 
-switch4 ansible_host=172.16.1.14 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports= "105 106 111 122" 
+switch1 ansible_host=172.16.1.11 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports="105 106 111 122" 
+switch2 ansible_host=172.16.1.12 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports="105 106 111 122" 
+switch3 ansible_host=172.16.1.13 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports="105 106 111 122" 
+switch4 ansible_host=172.16.1.14 ansible_user=ansible ansible_ssh_pass=switch_password allowed_trunk_ports="105 106 111 122" 
