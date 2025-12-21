@@ -34,29 +34,6 @@
         enable: "{{ item.enable | default(True) }}"
     loop: "{{ pfsense_interfaces }}"
 
-  - name: Add  VLAN
-    pfsense_vlan:
-      interface: em1
-      vlan_id: 100
-      descr: voice
-      priority: 5
-      state: present
-
-  - name: Add  VLAN
-    pfsense_vlan:
-      interface: em1
-      vlan_id: 101
-      descr: printer
-      priority: 5
-      state: present
-
-  - name: Add  VLAN Management
-    pfsense_vlan:
-      interface: em1
-      vlan_id: 30
-      descr: management
-      priority: 5
-      state: present
 
   - name: Configure DHCP servers
     pfsense_dhcp_server:

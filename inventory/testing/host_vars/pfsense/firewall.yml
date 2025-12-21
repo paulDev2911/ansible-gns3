@@ -34,7 +34,7 @@ firewall_rules:
     ipprotocol: inet
     protocol: tcp
     source: NET:Management_Interface
-    destination: "172.16.1.1"
+    destination: "172.16.3.1"
     destination_port: "443"
 
   - name: "Allow Management SSH to pfSense"
@@ -43,7 +43,7 @@ firewall_rules:
     ipprotocol: inet
     protocol: tcp
     source: NET:Management_Interface
-    destination: "172.16.1.1"
+    destination: "172.16.3.1"
     destination_port: "22"
 
   - name: "Block DMZ to LAN"

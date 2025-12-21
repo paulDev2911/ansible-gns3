@@ -4,92 +4,51 @@
   gather_facts: false
   collections:
     - pfsensible.core
-  
+    - cisco.ios
   tasks:
-    - name: "Configure IPSec Phase 1 (IKE)"
-      pfsense_ipsec:
-        state: present
-        descr: "{{ site_description }}"
-        interface: "{{ vpn_interface }}"
-        remote_gateway: "{{ remote_gateway }}"
-        iketype: "{{ ike_version }}"
-        authentication_method: "{{ authentication_method }}"
-        preshared_key: "{{ preshared_key }}"
-        myid_type: "{{ myid_type }}"
-        myid_data: "{{ myid_data }}"
-        peerid_type: "{{ peerid_type }}"
-        peerid_data: "{{ peerid_data }}"
-        lifetime: "{{ phase1_lifetime }}"
-        nat_traversal: "{{ nat_traversal }}"
-        dpd_delay: "{{ dpd_delay }}"
-        dpd_maxfail: "{{ dpd_maxfail }}"
-    
-    - name: "Configure IPSec Phase 2 (ESP)"
-      pfsense_ipsec_p2:
-        p1_descr: "{{ site_description }}"
-        descr: "{{ site_description }}-P2"
-        state: present
-        mode: "{{ tunnel_mode }}"
-        protocol: "{{ esp_protocol }}"
-        local: "{{ local_network }}"
-        remote: "{{ remote_network }}"
-        aes: "{{ phase2_encryption }}"
-        aes_len: "{{ phase2_aes_length }}"
-        sha256: "{{ phase2_hash }}"
-        pfsgroup: "{{ pfs_group }}"
-        lifetime: "{{ phase2_lifetime }}"
-    
-    - name: "Allow IKE (UDP 500)"
-      pfsense_rule:
-        name: "{{ firewall_rules[0].name }}"
-        action: pass
-        interface: "{{ vpn_interface }}"
-        ipprotocol: inet
-        protocol: "{{ firewall_rules[0].protocol }}"
-        source: "{{ remote_gateway }}"
-        destination: "{{ local_gateway }}"
-        destination_port: "{{ firewall_rules[0].port }}"
-        state: present
-    
-    - name: "Allow NAT-T (UDP 4500)"
-      pfsense_rule:
-        name: "{{ firewall_rules[1].name }}"
-        action: pass
-        interface: "{{ vpn_interface }}"
-        ipprotocol: inet
-        protocol: "{{ firewall_rules[1].protocol }}"
-        source: "{{ remote_gateway }}"
-        destination: "{{ local_gateway }}"
-        destination_port: "{{ firewall_rules[1].port }}"
-        state: present
-    
-    - name: "Allow IPSec ESP"
-      pfsense_rule:
-        name: "{{ firewall_rules[2].name }}"
-        action: pass
-        interface: "{{ vpn_interface }}"
-        ipprotocol: inet
-        protocol: "{{ firewall_rules[2].protocol }}"
-        source: "{{ remote_gateway }}"
-        destination: "{{ local_gateway }}"
-        state: present
-    
-    - name: "Allow traffic through tunnel from existing site"
-      pfsense_rule:
-        name: "{{ tunnel_traffic_rules.remote_to_local.name }}"
-        action: pass
-        interface: "{{ tunnel_traffic_rules.remote_to_local.interface }}"
-        ipprotocol: inet
-        source: "{{ tunnel_traffic_rules.remote_to_local.source }}"
-        destination: "{{ tunnel_traffic_rules.remote_to_local.destination }}"
-        state: present
-    
-    - name: "Allow LAN to existing site through VPN"
-      pfsense_rule:
-        name: "{{ tunnel_traffic_rules.local_to_remote.name }}"
-        action: pass
-        interface: "{{ tunnel_traffic_rules.local_to_remote.interface }}"
-        ipprotocol: inet
-        source: "{{ tunnel_traffic_rules.local_to_remote.source }}"
-        destination: "{{ tunnel_traffic_rules.local_to_remote.destination }}"
-        state: present
+
+  - name: Create Pfsense VLANs
+    pfsense_vlan:
+      interface: "{{ item.interface }}"
+      vlan_id: "{{ item.vlan_id }}"
+      descr: "{{ item.descr }}"
+      priority: "{{ item.priority }}"
+      state: "{{ item.state }}"
+    loop: "{{ vlans }}"
+
+  - name: Create VLANs on Switches
+    cisco
+
+  - name: Create VLANs
+    - name: Create Vlan "{{ item.descr }}" on pfsense
+      pfsense_vlan:
+        interface: "{{ item.interface }}"
+        vlan_id: "{{ item.vlan_id }}"
+        descr: "{{ item.descr }}"
+        priority: "{{ item.priority }}"
+        state: "{{ item.state }}"
+
+    - name: Create Vlan "{{ item.descr }}" on the switches
+      cisco.ios.ios_vlans:
+        config:
+          - name: "{{ item.name }}"
+            state: "{{ item.state | default('active') }}"
+            vlan_id: "{{ item.vlan_id }}"
+            shutdown: "{{ item.shutdown | default('disabled') }}"
+        state: merged
+  loop: "{{ vlans }}"
+
+  - name: Create Pfsense VLAN interfaces
+    pfsense_interface:
+        descr: "{{ item.descr }}"
+        interface: "{{ item.interface }}"
+        ipv4_address: "{{ item.ipv4_address | default(omit) }}"
+        ipv4_gateway: "{{ item.ipv4_gateway | default(omit) }}"
+        ipv4_prefixlen: "{{ item.ipv4_prefixlen | default(24) }}"
+        ipv4_type: "{{ item.ipv4_type | default('static') }}"
+        ipv6_address: "{{ item.ipv6_address | default(omit) }}"
+        ipv6_gateway: "{{ item.ipv6_gateway | default(omit) }}"
+        ipv6_prefixlen: "{{ item.ipv6_prefixlen | default(128) }}"
+        ipv6_type: "{{ item.ipv6_type | default('static') }}"
+        enable: "{{ item.enable | default(True) }}"
+    loop: "{{ pfsense_vlan_interfaces }}"

@@ -31,7 +31,7 @@ pfsense_interfaces:
   
   - descr: "Management_Interface"
     interface: "em3"
-    ipv4_address: "172.16.1.1"
+    ipv4_address: "172.16.3.1"
     ipv4_prefixlen: 24
     ipv4_type: "static"
     ipv6_type: none
@@ -44,6 +44,7 @@ pfsense_interfaces:
     ipv4_type: "static"
     ipv6_type: none
     enable: true
+  
 
 pfsense_dhcp_servers:
   - interface: "em1"

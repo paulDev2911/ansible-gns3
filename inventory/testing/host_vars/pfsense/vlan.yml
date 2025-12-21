@@ -1,16 +1,46 @@
 ---
 vlans:
   - vlan_id: 10
+    interface: "em1"
     descr: "printer"
     ip: "192.168.10.1"
+    priority: 5
+    state: present
+    shutdown: disabled
   - vlan_id: 20
+    interface: "em1"
     descr: "voice"
+    priority: 5
     ip: "192.168.20.1"
+    state: present
+    shutdown: disabled
   - vlan_id: 30
-    descr: "management"
+    interface: "em1"
+    descr: "switch_management"
     ip: "172.16.1.1"
+    state: present
+    priority: 5
+    shutdown: disabled
 
-pfsense_management_ips:
-  lan: "192.168.1.1"
-  dmz: "172.16.2.1"
-  management: "172.16.1.1"
+pfsense_vlan_interfaces:
+  - descr: "Switch_Management_Interface"
+    interface: "em1:30"
+    ipv4_address: "172.16.1.1"
+    ipv4_prefixlen: 24
+    ipv4_type: "static"
+    ipv6_type: none
+    enable: true
+  - descr: "Printer_Interface"
+    interface: "em1:10"
+    ipv4_address: "192.168.10.1"
+    ipv4_prefixlen: 24
+    ipv4_type: "static"
+    ipv6_type: none
+    enable: true
+  - descr: "voice_Interface"
+    interface: "em1:20"
+    ipv4_address: "192.168.20.1"
+    ipv4_prefixlen: 24
+    ipv4_type: "static"
+    ipv6_type: none
+    enable: true
