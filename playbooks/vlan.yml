@@ -16,9 +16,6 @@
       state: "{{ item.state }}"
     loop: "{{ vlans }}"
 
-  - name: Create VLANs on Switches
-    cisco
-
   - name: Create VLANs
     - name: Create Vlan "{{ item.descr }}" on pfsense
       pfsense_vlan:
