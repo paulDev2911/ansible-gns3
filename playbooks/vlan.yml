@@ -1,13 +1,11 @@
 ---
-- name: "IPSec VPN zum bestehenden Standort"
+- name: "Setup VLANs on pfSense"
   hosts: pfsense
   gather_facts: false
   collections:
     - pfsensible.core
-    - cisco.ios
   tasks:
-
-  - name: Create Pfsense VLANs
+  - name: Create Vlans on pfsense
     pfsense_vlan:
       interface: "{{ item.interface }}"
       vlan_id: "{{ item.vlan_id }}"
@@ -15,25 +13,6 @@
       priority: "{{ item.priority }}"
       state: "{{ item.state }}"
     loop: "{{ vlans }}"
-
-  - name: Create VLANs
-    - name: Create Vlan "{{ item.descr }}" on pfsense
-      pfsense_vlan:
-        interface: "{{ item.interface }}"
-        vlan_id: "{{ item.vlan_id }}"
-        descr: "{{ item.descr }}"
-        priority: "{{ item.priority }}"
-        state: "{{ item.state }}"
-
-    - name: Create Vlan "{{ item.descr }}" on the switches
-      cisco.ios.ios_vlans:
-        config:
-          - name: "{{ item.name }}"
-            state: "{{ item.state | default('active') }}"
-            vlan_id: "{{ item.vlan_id }}"
-            shutdown: "{{ item.shutdown | default('disabled') }}"
-        state: merged
-  loop: "{{ vlans }}"
 
   - name: Create Pfsense VLAN interfaces
     pfsense_interface:
@@ -49,3 +28,19 @@
         ipv6_type: "{{ item.ipv6_type | default('static') }}"
         enable: "{{ item.enable | default(True) }}"
     loop: "{{ pfsense_vlan_interfaces }}"
+
+- name: "Setup VLANs on Switches"
+  hosts: switches
+  gather_facts: false
+  collections:
+    - cisco.ios
+  tasks:
+  - name: Create Vlans on the switches
+    cisco.ios.ios_vlans:
+      config:
+        - name: "{{ item.descr }}"
+          state: "{{ {'present': 'active', 'absent': 'suspend'}[item.state] | default(item.state) }}"
+          vlan_id: "{{ item.vlan_id }}"
+          shutdown: "{{ item.shutdown | default('disabled') }}"
+      state: merged
+    loop: "{{ vlans }}"
