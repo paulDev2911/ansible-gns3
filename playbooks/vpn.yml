@@ -20,7 +20,7 @@
         peerid_type: "address"
         peerid_data: "10.1.1.10"
         lifetime: 28800
-        nat_traversal: "force"
+        nat_traversal: "on"
         dpd_delay: 10
         dpd_maxfail: 5
 
@@ -29,16 +29,16 @@
         p1_descr: "VPN-to-existing-site"
         descr: "VPN-to-existing-site-P2"
         state: present
-        mode: "tunnel"
+        mode: "vti"
         protocol: "esp"
-        local: "192.168.1.0/24"
-        remote: "192.168.2.0/24"
+        local: "10.6.106.2/30"
+        remote: "10.6.106.1"
         aes: true
         aes_len: auto
         sha256: true
         pfsgroup: 14
         lifetime: 3600
-        
+
     - name: "Allow IKE (UDP 500)"
       pfsense_rule:
         name: "Allow IKE from existing site"
