@@ -43,14 +43,6 @@
       pfsense_interface:
           descr: "{{ item.descr }}"
           interface: "{{ item.interface }}"
-          ipv4_address: "{{ item.ipv4_address | default(omit) }}"
-          ipv4_gateway: "{{ item.ipv4_gateway | default(omit) }}"
-          ipv4_prefixlen: "{{ item.ipv4_prefixlen | default(24) }}"
-          ipv4_type: "{{ item.ipv4_type | default('static') }}"
-          ipv6_address: "{{ item.ipv6_address | default(omit) }}"
-          ipv6_gateway: "{{ item.ipv6_gateway | default(omit) }}"
-          ipv6_prefixlen: "{{ item.ipv6_prefixlen | default(128) }}"
-          ipv6_type: "{{ item.ipv6_type | default('static') }}"
           enable: "{{ item.enable | default(True) }}"
       loop: "{{ vpn_interfaces }}"
 
