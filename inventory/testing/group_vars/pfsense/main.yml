@@ -45,6 +45,10 @@ pfsense_interfaces:
     ipv6_type: none
     enable: true
   
+vpn_interfaces:
+  - descr: "Tunnel_Interface"
+    interface: "ipsec1"
+    enable: true
 
 pfsense_dhcp_servers:
   - interface: "em1"

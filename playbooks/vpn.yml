@@ -39,16 +39,38 @@
         pfsgroup: 14
         lifetime: 3600
 
-    - name: "Allow IKE (UDP 500)"
+    - name: Add VPN interface
+      pfsense_interface:
+          descr: "{{ item.descr }}"
+          interface: "{{ item.interface }}"
+          ipv4_address: "{{ item.ipv4_address | default(omit) }}"
+          ipv4_gateway: "{{ item.ipv4_gateway | default(omit) }}"
+          ipv4_prefixlen: "{{ item.ipv4_prefixlen | default(24) }}"
+          ipv4_type: "{{ item.ipv4_type | default('static') }}"
+          ipv6_address: "{{ item.ipv6_address | default(omit) }}"
+          ipv6_gateway: "{{ item.ipv6_gateway | default(omit) }}"
+          ipv6_prefixlen: "{{ item.ipv6_prefixlen | default(128) }}"
+          ipv6_type: "{{ item.ipv6_type | default('static') }}"
+          enable: "{{ item.enable | default(True) }}"
+      loop: "{{ vpn_interfaces }}"
+      
+    - name: Add VPN route
+      pfsense_route:
+        descr: vpn_route
+        gateway: IPSECVTI_VTIV4
+        network: "192.168.2.0/24"
+        state: present
+
+    - name: "Allow all through VPN"
       pfsense_rule:
-        name: "Allow IKE from existing site"
+        name: "Allow all through VPN"
         action: pass
         interface: "VPN_Interface"
         ipprotocol: inet
-        protocol: udp
-        source: "10.1.1.10"
-        destination: "10.1.1.20"
-        destination_port: "500"
+        protocol: any
+        source: any
+        destination: any
+        destination_port: any
         state: present
 
     - name: "Allow NAT-T (UDP 4500)"
