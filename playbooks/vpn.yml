@@ -58,7 +58,7 @@
     - name: Add VPN route
       pfsense_route:
         descr: vpn_route
-        gateway: IPSECVTI_VTIV4
+        gateway: "TUNNEL_INTERFACE_VTIV4"
         network: "192.168.2.0/24"
         state: present
 
