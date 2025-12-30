@@ -11,14 +11,14 @@
         state: present
         descr: "VPN-to-existing-site"
         interface: "VPN_Interface"
-        remote_gateway: "10.1.1.20"
+        remote_gateway: "10.1.1.10"
         iketype: "ikev2"
         authentication_method: "pre_shared_key"
         preshared_key: "iwas"
         myid_type: "address"
         myid_data: "10.1.1.10"
         peerid_type: "address"
-        peerid_data: "10.1.1.20"
+        peerid_data: "10.1.1.10"
         lifetime: 28800
         nat_traversal: "on"
         dpd_delay: 10
