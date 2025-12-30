@@ -11,14 +11,14 @@
         state: present
         descr: "VPN-to-existing-site"
         interface: "VPN_Interface"
-        remote_gateway: "10.1.1.10"
+        remote_gateway: "10.1.1.20"
         iketype: "ikev2"
         authentication_method: "pre_shared_key"
         preshared_key: "iwas"
         myid_type: "address"
-        myid_data: "10.1.1.20"
+        myid_data: "10.1.1.10"
         peerid_type: "address"
-        peerid_data: "10.1.1.10"
+        peerid_data: "10.1.1.20"
         lifetime: 28800
         nat_traversal: "on"
         dpd_delay: 10
@@ -53,7 +53,16 @@
           ipv6_type: "{{ item.ipv6_type | default('static') }}"
           enable: "{{ item.enable | default(True) }}"
       loop: "{{ vpn_interfaces }}"
-      
+
+    - name: Add tunnel VTI gateway
+      pfsensible.core.pfsense_gateway:
+        name: "TUNNEL_INTERFACE_VTIV4"        
+        descr: "IPsec VTI tunnel gateway"
+        interface: "TUNNEL_INTERFACE"         
+        gateway: dynamic              
+        ipprotocol: inet
+        state: present
+     
     - name: Add VPN route
       pfsense_route:
         descr: vpn_route
@@ -70,7 +79,6 @@
         protocol: any
         source: any
         destination: any
-        destination_port: any
         state: present
 
     - name: "Allow NAT-T (UDP 4500)"
