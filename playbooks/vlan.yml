@@ -57,7 +57,6 @@
             encapsulation: "dot1q"
       state: merged
     loop: "{{ trunk_ports }}"
-    when: trunk_ports is defined
 
   - name: Configure ports with voice and data VLANs
     cisco.ios.ios_l2_interfaces:
