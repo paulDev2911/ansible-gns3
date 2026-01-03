@@ -57,6 +57,7 @@
             encapsulation: "dot1q"
       state: merged
     loop: "{{ trunk_ports }}"
+    when: trunk_ports is defined
 
   - name: Configure ports with voice and data VLANs
     cisco.ios.ios_l2_interfaces:
@@ -69,6 +70,7 @@
             vlan: "{{ item.voice_vlan }}"
       state: merged
     loop: "{{ voice_access_ports }}"
+    when: voice_access_ports is defined
 
   - name: Configure data-only access ports
     cisco.ios.ios_l2_interfaces:
@@ -79,3 +81,4 @@
             vlan: "{{ item.vlan }}"
       state: merged
     loop: "{{ data_only_ports }}"
+    when: data_only_ports is defined
