@@ -54,7 +54,7 @@
           trunk:
             allowed_vlans: "{{ item.allowed_vlans }}"
             native_vlan: "{{ item.native_vlan }}"
-            encapsulation: "{{ encapsulation_type }}"
+            encapsulation: "dot1q"
       state: merged
     loop: "{{ trunk_ports }}"
 
