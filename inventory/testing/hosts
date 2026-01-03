@@ -2,10 +2,10 @@
 pfsense1 ansible_host=172.16.3.1 ansible_user=admin ansible_ssh_pass=pfsense
 
 [switches]
-switch1 ansible_host=172.16.1.11 ansible_user=ansible ansible_password=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret
-switch2 ansible_host=172.16.1.12 ansible_user=ansible ansible_ssh_pass=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret
-switch3 ansible_host=172.16.1.13 ansible_user=ansible ansible_ssh_pass=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret
-switch4 ansible_host=172.16.1.14 ansible_user=ansible ansible_ssh_pass=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret
+switch1 ansible_host=172.16.1.11 ansible_user=ansible ansible_password=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret  ansible_network_cli_ssh_type=paramiko
+switch2 ansible_host=172.16.1.12 ansible_user=ansible ansible_ssh_pass=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret  ansible_network_cli_ssh_type=paramiko
+switch3 ansible_host=172.16.1.13 ansible_user=ansible ansible_ssh_pass=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret  ansible_network_cli_ssh_type=paramiko
+switch4 ansible_host=172.16.1.14 ansible_user=ansible ansible_ssh_pass=switch_password ansible_connection=ansible.netcommon.network_cli ansible_network_os=cisco.ios.ios ansible_become=true ansible_become_method=enable ansible_become_password=mysecret  ansible_network_cli_ssh_type=paramiko
 
 [vlans:children]
 pfsense
