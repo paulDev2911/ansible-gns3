@@ -35,6 +35,7 @@
   collections:
     - cisco.ios
   tasks:
+
   - name: Create Vlans on the switches
     cisco.ios.ios_vlans:
       config:
@@ -44,3 +45,37 @@
           shutdown: "{{ item.shutdown | default('disabled') }}"
       state: merged
     loop: "{{ vlans }}"
+
+  - name: Setup Trunk ports
+    cisco.ios.ios_l2_interfaces:
+      config:
+        - name: "{{ item.interface }}"
+          mode: trunk
+          trunk:
+            allowed_vlans: "{{ item.allowed_vlans }}"
+            native_vlan: "{{ item.native_vlan }}"
+            encapsulation: "{{ encapsulation_type }}"
+      state: merged
+    loop: "{{ trunk_ports }}"
+
+  - name: Configure ports with voice and data VLANs
+    cisco.ios.ios_l2_interfaces:
+      config:
+        - name: "{{ item.interface }}"
+          mode: access
+          access:
+            vlan: "{{ item.data_vlan }}"
+          voice:
+            vlan: "{{ item.voice_vlan }}"
+      state: merged
+    loop: "{{ voice_access_ports }}"
+
+  - name: Configure data-only access ports
+    cisco.ios.ios_l2_interfaces:
+      config:
+        - name: "{{ item.interface }}"
+          mode: access
+          access:
+            vlan: "{{ item.vlan }}"
+      state: merged
+    loop: "{{ data_only_ports }}"

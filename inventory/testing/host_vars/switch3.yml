@@ -1,0 +1,27 @@
+trunk_ports:
+  - interface: "GigabitEthernet0/0"
+    allowed_vlans: "10,20,30,1"
+    native_vlan: 1
+
+# Ports with PC and VoIP phone
+voice_access_ports:
+  - interface: "GigabitEthernet0/1"
+    data_vlan: 10
+    voice_vlan: 20
+  - interface: "GigabitEthernet0/2"
+    data_vlan: 10
+    voice_vlan: 20
+  - interface: "GigabitEthernet0/3"
+    data_vlan: 10
+    voice_vlan: 20
+
+# Ports with only PC (no phone)
+data_only_ports:
+  - interface: "GigabitEthernet1/0"
+    vlan: 10
+  - interface: "GigabitEthernet1/1"
+    vlan: 10
+  - interface: "GigabitEthernet1/2"
+    vlan: 10
+  - interface: "GigabitEthernet1/3"
+    vlan: 10

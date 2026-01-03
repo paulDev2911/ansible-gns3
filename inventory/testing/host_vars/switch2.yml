@@ -1,0 +1,4 @@
+trunk_ports:
+  - interface: "GigabitEthernet0/0"
+    allowed_vlans: "10,20,30,1"
+    native_vlan: 1
