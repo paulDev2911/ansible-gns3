@@ -140,70 +140,70 @@ firewall_rules:
 
   - name: "Block Printer VLAN to LAN"
     action: block
-    interface: printer
+    interface: Printer_Interface
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: NET:lan
 
   - name: "Block Printer VLAN to DMZ"
     action: block
-    interface: printer
+    interface: Printer_Interface
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: NET:DMZ_Interface
 
   - name: "Block Printer VLAN to Management"
     action: block
-    interface: printer
+    interface: Printer_Interface
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: NET:Management_Interface
 
   - name: "Block Printer VLAN to Voice VLAN"
     action: block
-    interface: printer
+    interface: Printer_Interface
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: "192.168.20.0/24"
 
   - name: "Block Printer VLAN to pfSense"
     action: block
-    interface: printer
+    interface: Printer_Interface
     ipprotocol: inet
     source: "192.168.10.0/24"
     destination: "192.168.10.1"
 
   - name: "Block Voice VLAN to LAN"
     action: block
-    interface: voice
+    interface: voice_Interface
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: NET:lan
 
   - name: "Block Voice VLAN to DMZ"
     action: block
-    interface: voice
+    interface: voice_Interface
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: NET:DMZ_Interface
 
   - name: "Block Voice VLAN to Management"
     action: block
-    interface: voice
+    interface: voice_Interface
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: NET:Management_Interface
 
   - name: "Block Voice VLAN to Printer VLAN"
     action: block
-    interface: voice
+    interface: voice_Interface
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: "192.168.10.0/24"
 
   - name: "Block Voice VLAN to pfSense"
     action: block
-    interface: voice
+    interface: voice_Interface
     ipprotocol: inet
     source: "192.168.20.0/24"
     destination: "192.168.20.1"
