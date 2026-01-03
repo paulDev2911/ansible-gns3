@@ -214,7 +214,7 @@ firewall_rules:
     ipprotocol: inet
     protocol: tcp
     source: NET:Management_Interface     
-    destination: NET:Switch_Management    
+    destination: NET:Switch_Management_Interface  
     destination_port: "22"
 
   - name: "Log all blocked WAN traffic"
