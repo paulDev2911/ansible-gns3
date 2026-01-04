@@ -1,26 +1,23 @@
 ---
-- name: "PfSense DHCP einrichten"
+- name: "PfSense Firewall einrichten"
   hosts: pfsense
-  collections:
-  - pfsensible.core
   become: true
-  become_method: su
   become_user: root
   tasks:
 
-  - name: Setup hostname and domain
-    pfsense_setup:
-      hostname: "{{hostname}}"
-      domain: "{{domain}}"
+    - name: Setup hostname and domain
+      pfsensible.core.pfsense_setup:
+        hostname: "{{ hostname }}"
+        domain: "{{ domain }}"
 
-  - name: timezone and language
-    pfsense_setup:
-      timezone: "{{timezone}}"
-      language: "{{language}}"
-      timeservers: "{{timeservers}}"
+    - name: Set Timezone and language
+      pfsensible.core.pfsense_setup:
+        timezone: "{{ timezone }}"
+        language: "{{ language }}"
+        timeservers: "{{ timeservers }}"
 
-  - name: Add multiple interfaces
-    pfsense_interface:
+    - name: Add multiple interfaces
+      pfsensible.core.pfsense_interface:
         descr: "{{ item.descr }}"
         interface: "{{ item.interface }}"
         ipv4_address: "{{ item.ipv4_address | default(omit) }}"
@@ -32,11 +29,11 @@
         ipv6_prefixlen: "{{ item.ipv6_prefixlen | default(128) }}"
         ipv6_type: "{{ item.ipv6_type | default('static') }}"
         enable: "{{ item.enable | default(True) }}"
-    loop: "{{ pfsense_interfaces }}"
+      loop: "{{ pfsense_interfaces }}"
 
 
-  - name: Configure DHCP servers
-    pfsense_dhcp_server:
+    - name: Configure DHCP servers
+      pfsensible.core.pfsense_dhcp_server:
         interface: "{{ item.interface }}"
         enable: "{{ item.enable | default(true) }}"
         range_from: "{{ item.range_from }}"
@@ -46,32 +43,32 @@
         domain: "{{ item.domain | default('example.com') }}"
         defaultleasetime: "{{ item.defaultleasetime | default(86400) }}"
         maxleasetime: "{{ item.maxleasetime | default(172800) }}"
-    loop: "{{ pfsense_dhcp_servers }}"
+      loop: "{{ pfsense_dhcp_servers }}"
 
-  - name: Enable DNS Resolver
-    pfsense_dns_resolver:
-      state: present
-      dnssec: true
-      regdhcp: true
-      hosts:
-            - { host: test, domain: home.local, ip: 192.168.1.100, descr: "Example host override",
-                aliases: [{ host: test-admin, domain: home.local, description: "Example aliases" }] }
+    - name: Enable DNS Resolver
+      pfsensible.core.pfsense_dns_resolver:
+        state: present
+        dnssec: true
+        regdhcp: true
+        hosts:
+          - { host: test, domain: home.local, ip: 192.168.1.100, descr: "Example host override",
+              aliases: [{ host: test-admin, domain: home.local, description: "Example aliases" }] }
 
-  - name: Create Operators group
-    pfsense_group:
-      name: Operators
-      scope: local
-      descr: "Operators group with limited privileges"
-      priv:
-        - page-all
-        - user-shell-access
-      state: present
-    
-  - name: Add operator user
-    pfsense_user:
-      name: "{{ pfsense_admin_username }}"
-      descr: Operator
-      scope: user
-      password: "{{ pfsense_admin_password }}"
-      groups: [ 'Operators' ]
-      priv: [ 'page-all', 'user-shell-access' ]
+    - name: Create Operators group
+      pfsensible.core.pfsense_group:
+        name: Operators
+        scope: local
+        descr: "Operators group with limited privileges"
+        priv:
+          - page-all
+          - user-shell-access
+        state: present
+
+    - name: Add operator user
+      pfsensible.core.pfsense_user:
+        name: "{{ pfsense_admin_username }}"
+        descr: Operator
+        scope: user
+        password: "{{ pfsense_admin_password }}"
+        groups: ['Operators']
+        priv: ['page-all', 'user-shell-access']

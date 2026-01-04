@@ -1,19 +1,17 @@
 ---
-- name: "PfSense Firewall einrichten"  
+- name: "PfSense Firewall einrichten"
   hosts: pfsense
-  collections:
-  - pfsensible.core
   tasks:
-  - name: "Create firewall rules"
-    pfsense_rule:
-      name: "{{ item.name }}"
-      action: "{{ item.action }}"
-      interface: "{{ item.interface }}"
-      ipprotocol: "{{ item.ipprotocol }}"
-      protocol: "{{ item.protocol | default('any') }}"
-      source: "{{ item.source }}"
-      destination: "{{ item.destination }}"
-      destination_port: "{{ item.destination_port | default(omit) }}"
-      log: "{{ item.log | default('yes') }}"
-      state: present
-    loop: "{{ firewall_rules }}"
+    - name: "Create firewall rules"
+      pfsensible.core.pfsense_rule:
+        name: "{{ item.name }}"
+        action: "{{ item.action }}"
+        interface: "{{ item.interface }}"
+        ipprotocol: "{{ item.ipprotocol }}"
+        protocol: "{{ item.protocol | default('any') }}"
+        source: "{{ item.source }}"
+        destination: "{{ item.destination }}"
+        destination_port: "{{ item.destination_port | default(omit) }}"
+        log: "{{ item.log | default('yes') }}"
+        state: present
+      loop: "{{ firewall_rules }}"

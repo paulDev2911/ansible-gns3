@@ -2,20 +2,18 @@
 - name: "Setup VLANs on pfSense"
   hosts: pfsense
   gather_facts: false
-  collections:
-    - pfsensible.core
   tasks:
-  - name: Create Vlans on pfsense
-    pfsense_vlan:
-      interface: "{{ item.interface }}"
-      vlan_id: "{{ item.vlan_id }}"
-      descr: "{{ item.descr }}"
-      priority: "{{ item.priority }}"
-      state: "{{ item.state }}"
-    loop: "{{ vlans }}"
+    - name: Create Vlans on pfsense
+      pfsensible.core.pfsense_vlan:
+        interface: "{{ item.interface }}"
+        vlan_id: "{{ item.vlan_id }}"
+        descr: "{{ item.descr }}"
+        priority: "{{ item.priority }}"
+        state: "{{ item.state }}"
+      loop: "{{ vlans }}"
 
-  - name: Create Pfsense VLAN interfaces
-    pfsense_interface:
+    - name: Create Pfsense VLAN interfaces
+      pfsensible.core.pfsense_interface:
         descr: "{{ item.descr }}"
         interface: "{{ item.interface }}"
         ipv4_address: "{{ item.ipv4_address | default(omit) }}"
@@ -27,57 +25,64 @@
         ipv6_prefixlen: "{{ item.ipv6_prefixlen | default(128) }}"
         ipv6_type: "{{ item.ipv6_type | default('static') }}"
         enable: "{{ item.enable | default(True) }}"
-    loop: "{{ pfsense_vlan_interfaces }}"
+      loop: "{{ pfsense_vlan_interfaces }}"
 
 - name: "Setup VLANs on Switches"
   hosts: switches
   gather_facts: false
-  collections:
-    - cisco.ios
   tasks:
 
-  - name: Create Vlans on the switches
-    cisco.ios.ios_vlans:
-      config:
-        - name: "{{ item.descr }}"
-          state: "{{ {'present': 'active', 'absent': 'suspend'}[item.state] | default(item.state) }}"
-          vlan_id: "{{ item.vlan_id }}"
-          shutdown: "{{ item.shutdown | default('disabled') }}"
-      state: merged
-    loop: "{{ vlans }}"
+    - name: Create Vlans on the switches
+      cisco.ios.ios_vlans:
+        config:
+          - name: "{{ item.descr }}"
+            state: "{{ {'present': 'active', 'absent': 'suspend'}[item.state] | default(item.state) }}"
+            vlan_id: "{{ item.vlan_id }}"
+            shutdown: "{{ item.shutdown | default('disabled') }}"
+        state: merged
+      loop: "{{ vlans }}"
 
-  - name: Setup Trunk ports
-    cisco.ios.ios_l2_interfaces:
-      config:
-        - name: "{{ item.interface }}"
-          mode: trunk
-          trunk:
-            allowed_vlans: "{{ item.allowed_vlans }}"
-            native_vlan: "{{ item.native_vlan }}"
-            encapsulation: "dot1q"
-      state: merged
-    loop: "{{ trunk_ports }}"
+    - name: Setup Trunk ports
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: "{{ item.interface }}"
+            mode: trunk
+            trunk:
+              allowed_vlans: "{{ item.allowed_vlans }}"
+              native_vlan: "{{ item.native_vlan }}"
+              encapsulation: "dot1q"
+        state: merged
+      loop: "{{ trunk_ports }}"
 
-  - name: Configure ports with voice and data VLANs
-    cisco.ios.ios_l2_interfaces:
-      config:
-        - name: "{{ item.interface }}"
-          mode: access
-          access:
-            vlan: "{{ item.data_vlan }}"
-          voice:
-            vlan: "{{ item.voice_vlan }}"
-      state: merged
-    loop: "{{ voice_access_ports }}"
-    when: voice_access_ports is defined
+    - name: Configure ports with voice and data VLANs
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: "{{ item.interface }}"
+            mode: access
+            access:
+              vlan: "{{ item.data_vlan }}"
+            voice:
+              vlan: "{{ item.voice_vlan }}"
+        state: merged
+      loop: "{{ voice_access_ports }}"
+      when: voice_access_ports is defined
 
-  - name: Configure data-only access ports
-    cisco.ios.ios_l2_interfaces:
-      config:
-        - name: "{{ item.interface }}"
-          mode: access
-          access:
-            vlan: "{{ item.vlan }}"
-      state: merged
-    loop: "{{ data_only_ports }}"
-    when: data_only_ports is defined
+    - name: Configure data-only access ports
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: "{{ item.interface }}"
+            mode: access
+            access:
+              vlan: "{{ item.vlan }}"
+        state: merged
+      loop: "{{ data_only_ports }}"
+      when: data_only_ports is defined
+
+    - name: Disable unused ports
+      cisco.ios.ios_interfaces:
+        config:
+          - name: "{{ item.interface }}"
+            enabled: false
+        state: merged
+      loop: "{{ disabled_ports }}"
+      when: disabled_ports is defined

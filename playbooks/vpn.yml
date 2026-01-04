@@ -2,12 +2,9 @@
 - name: "IPSec VPN zum bestehenden Standort"
   hosts: pfsense
   gather_facts: false
-  collections:
-    - pfsensible.core
-  
   tasks:
     - name: "Configure IPSec Phase 1 (IKE)"
-      pfsense_ipsec:
+      pfsensible.core.pfsense_ipsec:
         state: present
         descr: "VPN-to-existing-site"
         interface: "VPN_Interface"
@@ -25,7 +22,7 @@
         dpd_maxfail: 5
 
     - name: "Configure IPSec Phase 2 (ESP)"
-      pfsense_ipsec_p2:
+      pfsensible.core.pfsense_ipsec_p2:
         p1_descr: "VPN-to-existing-site"
         descr: "VPN-to-existing-site-P2"
         state: present
@@ -40,30 +37,30 @@
         lifetime: 3600
 
     - name: Add VPN interface
-      pfsense_interface:
-          descr: "{{ item.descr }}"
-          interface: "{{ item.interface }}"
-          enable: "{{ item.enable | default(True) }}"
+      pfsensible.core.pfsense_interface:
+        descr: "{{ item.descr }}"
+        interface: "{{ item.interface }}"
+        enable: "{{ item.enable | default(True) }}"
       loop: "{{ vpn_interfaces }}"
 
     - name: Add tunnel VTI gateway
       pfsensible.core.pfsense_gateway:
-        name: "TUNNEL_INTERFACE_VTIV4"        
+        name: "TUNNEL_INTERFACE_VTIV4"
         descr: "IPsec VTI tunnel gateway"
-        interface: "TUNNEL_INTERFACE"         
-        gateway: dynamic              
+        interface: "TUNNEL_INTERFACE"
+        gateway: dynamic
         ipprotocol: inet
         state: present
-     
+
     - name: Add VPN route
-      pfsense_route:
+      pfsensible.core.pfsense_route:
         descr: vpn_route
         gateway: "TUNNEL_INTERFACE_VTIV4"
         network: "192.168.2.0/24"
         state: present
 
     - name: "Allow all through VPN"
-      pfsense_rule:
+      pfsensible.core.pfsense_rule:
         name: "Allow all through VPN"
         action: pass
         interface: "VPN_Interface"
@@ -74,7 +71,7 @@
         state: present
 
     - name: "Allow NAT-T (UDP 4500)"
-      pfsense_rule:
+      pfsensible.core.pfsense_rule:
         name: "Allow NAT-T from existing site"
         action: pass
         interface: "VPN_Interface"
@@ -86,7 +83,7 @@
         state: present
 
     - name: "Allow IPSec ESP"
-      pfsense_rule:
+      pfsensible.core.pfsense_rule:
         name: "Allow ESP from existing site"
         action: pass
         interface: "VPN_Interface"
@@ -97,7 +94,7 @@
         state: present
 
     - name: "Allow traffic through tunnel from existing site"
-      pfsense_rule:
+      pfsensible.core.pfsense_rule:
         name: "Allow existing site to new site"
         action: pass
         interface: IPsec
@@ -107,7 +104,7 @@
         state: present
 
     - name: "Allow LAN to existing site through VPN"
-      pfsense_rule:
+      pfsensible.core.pfsense_rule:
         name: "Allow new site to existing site"
         action: pass
         interface: lan

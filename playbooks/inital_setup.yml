@@ -1,0 +1,5 @@
+---
+- import_playbook: pfsense.yml
+- import_playbook: vlan.yml
+- import_playbook: fw.yml
+- import_playbook: vpn.yml
