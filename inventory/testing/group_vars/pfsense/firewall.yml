@@ -213,9 +213,25 @@ firewall_rules:
     interface: Management_Interface       
     ipprotocol: inet
     protocol: tcp
-    source: NET:Management_Interface     
+    source: NET:Management_Interface
     destination: NET:Switch_Management_Interface  
     destination_port: "22"
+
+  - name: "Allow Remote Site to LAN"
+    action: pass
+    interface: Tunnel_Interface
+    ipprotocol: inet
+    protocol: any
+    source: "192.168.2.0/24"
+    destination: NET:LAN_Interface
+
+  - name: "Allow LAN  to remote Site"
+    action: pass
+    interface: LAN_Interface
+    ipprotocol: inet
+    protocol: any
+    source: NET:LAN_Interface
+    destination: "192.168.2.0/24"
 
   - name: "Log all blocked WAN traffic"
     action: block

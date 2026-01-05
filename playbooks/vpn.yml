@@ -5,36 +5,35 @@
   tasks:
     - name: "Configure IPSec Phase 1 (IKE)"
       pfsensible.core.pfsense_ipsec:
-        state: present
-        descr: "VPN-to-existing-site"
-        interface: "VPN_Interface"
-        remote_gateway: "10.1.1.10"
-        iketype: "ikev2"
-        authentication_method: "pre_shared_key"
-        preshared_key: "iwas"
-        myid_type: "address"
-        myid_data: "10.1.1.20"
-        peerid_type: "address"
-        peerid_data: "10.1.1.10"
-        lifetime: 28800
-        nat_traversal: "on"
-        dpd_delay: 10
-        dpd_maxfail: 5
+        state: "{{ ipsec_p1_state }}"
+        descr: "{{ ipsec_p1_description }}"
+        interface: "{{ vpn_interface }}"
+        remote_gateway: "{{ remote_gateway }}"
+        iketype: "{{ p1_iketype }}"
+        authentication_method: "{{ p1_authentication_method }}"
+        preshared_key: "{{ p1_preshared_key }}"
+        myid_type: "{{ p1_myid_type }}"
+        peerid_type: "{{ p1_peerid_type }}"
+        lifetime: "{{ p1_lifetime }}"
+        nat_traversal: "{{ p1_nat_traversal }}"
+        dpd_delay: "{{ p1_maxfail }}"
+        dpd_maxfail: "{{ p1_dpd_maxfail }}"
+        apply: true
 
     - name: "Configure IPSec Phase 2 (ESP)"
       pfsensible.core.pfsense_ipsec_p2:
-        p1_descr: "VPN-to-existing-site"
-        descr: "VPN-to-existing-site-P2"
-        state: present
-        mode: "vti"
-        protocol: "esp"
-        local: "10.6.106.2/30"
-        remote: "10.6.106.1"
-        aes: true
-        aes_len: auto
-        sha256: true
-        pfsgroup: 14
-        lifetime: 3600
+        p1_descr: "{{ ipsec_p1_description }}"
+        descr: "{{ ipsec_p2_description }}"
+        state: "{{ ipsec_p2_state }}"
+        mode: "{{ ipsec_p2_mode }}"
+        protocol: "{{ ipsec_p2_protocol }}"
+        local: "{{ ipsec_p2_local }}"
+        remote: "{{ ipsec_p2_remote }}"
+        aes: "{{ ipsec_p2_aes }}"
+        aes_len: "{{ ipsec_p2_aes_len }}"
+        sha256: "{{ ipsec_p2_sha256 }}"
+        pfsgroup: "{{ ipsec_p2_pfsgroup }}"
+        lifetime: "{{ ipsec_p2_lifetime }}"
 
     - name: Add VPN interface
       pfsensible.core.pfsense_interface:
@@ -45,36 +44,16 @@
 
     - name: Add tunnel VTI gateway
       pfsensible.core.pfsense_gateway:
-        name: "TUNNEL_INTERFACE_VTIV4"
-        descr: "IPsec VTI tunnel gateway"
-        interface: "TUNNEL_INTERFACE"
-        gateway: dynamic
-        ipprotocol: inet
-        state: present
+        name: "{{ ipsec_tunnel_gateway_name }}"
+        descr: "{{ ipsec_tunnel_gateway_descr }}"
+        interface: "{{ ipsec_tunnel_gateway_interface }}"
+        gateway: "{{ ipsec_tunnel_gateway_gateway }}"
+        ipprotocol: "{{ ipsec_tunnel_gateway_ipprotocol }}"
+        state: "{{ ipsec_tunnel_gateway_state }}"
 
     - name: Add VPN route
       pfsensible.core.pfsense_route:
-        descr: vpn_route
-        gateway: "TUNNEL_INTERFACE_VTIV4"
-        network: "192.168.2.0/24"
-        state: present
-
-    - name: "Allow traffic through tunnel from existing site"
-      pfsensible.core.pfsense_rule:
-        name: "Allow existing site to new site"
-        action: pass
-        interface: IPsec
-        ipprotocol: inet
-        source: "192.168.2.0/24"
-        destination: "192.168.1.0/24"
-        state: present
-
-    - name: "Allow LAN to existing site through VPN"
-      pfsensible.core.pfsense_rule:
-        name: "Allow new site to existing site"
-        action: pass
-        interface: LAN_Interface
-        ipprotocol: inet
-        source: "192.168.1.0/24"
-        destination: "192.168.2.0/24"
-        state: present
+        descr: "{{ vpn_route_descr }}"
+        gateway: "{{ ipsec_tunnel_gateway_name }}"
+        network: "{{ vpn_route_destination_network }}"
+        state: "{{ vpn_route_state }}"

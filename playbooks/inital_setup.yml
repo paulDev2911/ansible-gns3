@@ -1,5 +1,12 @@
 ---
-- import_playbook: pfsense.yml
-- import_playbook: vlan.yml
-- import_playbook: fw.yml
-- import_playbook: vpn.yml
+- name: Running Pfense Configuration
+  import_playbook: pfsense.yml
+
+- name: Creating Site 2 Site VPN
+  import_playbook: vpn.yml
+
+- name: Crating Vlan Configuration on Switches and Pfsense
+  import_playbook: vlan.yml
+
+- name: Creating Firewall Rules
+  import_playbook: fw.yml

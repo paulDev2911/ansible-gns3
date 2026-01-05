@@ -1,53 +1,51 @@
 ---
-site_description: "VPN-to-existing-site"
-local_site_name: "new-site"
-remote_site_name: "existing-site"
-
+# Phase 1 configuration
+ipsec_p1_state: present
+ipsec_p1_description: "VPN-to-existing-site"
 vpn_interface: "VPN_Interface"
-lan_interface: "lan"
-ipsec_interface: "IPsec"
-
-local_gateway: "10.1.1.20"
 remote_gateway: "10.1.1.10"
+local_gateway: "10.1.1.20"
+p1_iketype: "ikev2"
+p1_authentication_method: "pre_shared_key"
+p1_preshared_key: "iwas"
+p1_myid_type: "myaddress"
+p1_peerid_type: "peeraddress"
+p1_lifetime: 28800
+p1_nat_traversal: "on"
+p1_dpd_delay: 10
+p1_dpd_maxfail: 5
 
-ike_version: "ikev2"
-authentication_method: "pre_shared_key"
-preshared_key: "iwas"
-myid_type: "address"
-myid_data: "{{ local_gateway }}"
-peerid_type: "address"
-peerid_data: "{{ remote_gateway }}"
-phase1_lifetime: 28800
-nat_traversal: "force"
-dpd_delay: 10
-dpd_maxfail: 5
 
-tunnel_mode: "tunnel"
-esp_protocol: "esp"
-phase2_encryption: true
-phase2_aes_length: "auto"
-phase2_hash: true
-pfs_group: 14
-phase2_lifetime: 3600
 
-local_network: "192.168.1.0/24"
 
-remote_network: "192.168.2.0/24"
+# Phase 2 Configuration
+ipsec_p2_description: "VPN-to-existing-site-P2" 
+ipsec_p2_state: present
+ipsec_p2_mode: "vti"
+ipsec_p2_protocol: "esp"
+ipsec_p2_local: "10.6.106.2/30"
+ipsec_p2_remote: "10.6.106.1"
+ipsec_p2_aes: true
+ipsec_p2_aes_len: auto
+ipsec_p2_sha256: true
+ipsec_p2_pfsgroup: 14
+ipsec_p2_lifetime: 3600
 
+# VPN interface 
 vpn_interfaces:
   - descr: "Tunnel_Interface"
     interface: "ipsec1"
     enable: true
 
-tunnel_traffic_rules:
-  remote_to_local:
-    name: "Allow {{ remote_site_name }} to {{ local_site_name }}"
-    source: "{{ remote_network }}"
-    destination: "{{ local_network }}"
-    interface: "{{ ipsec_interface }}"
-  
-  local_to_remote:
-    name: "Allow {{ local_site_name }} to {{ remote_site_name }}"
-    source: "{{ local_network }}"
-    destination: "{{ remote_network }}"
-    interface: "{{ lan_interface }}"
+# VPN Tunnel Gateway
+ipsec_tunnel_gateway_name: "TUNNEL_INTERFACE_VTIV4"
+ipsec_tunnel_gateway_descr: "IPsec VTI tunnel gateway"
+ipsec_tunnel_gateway_interface: "TUNNEL_INTERFACE"
+ipsec_tunnel_gateway_gateway: "dynamic"
+ipsec_tunnel_gateway_ipprotocol: inet
+ipsec_tunnel_gateway_state: "present"
+
+# VPN Route
+vpn_route_descr: "vpn_route"
+vpn_route_destination_network: "192.168.2.0/24"
+vpn_route_state: "present"
