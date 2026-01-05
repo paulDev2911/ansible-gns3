@@ -57,13 +57,13 @@ pfsense_dhcp_servers:
     domain: "{{ domain }}"
     defaultleasetime: 86400
     maxleasetime: 172800
-    
+
   - interface: "em2"
     enable: true
     range_from: "172.16.2.100"
     range_to: "172.16.2.200"
     netmask: "255.255.255.0"
-    gateway: "172.16.1.1"
+    gateway: "172.16.2.1"
     domain: "{{ domain }}"
     defaultleasetime: 86400
     maxleasetime: 172800

@@ -110,21 +110,21 @@ firewall_rules:
 
   - name: "Block LAN to DMZ"
     action: block
-    interface: lan
+    interface: LAN_Interface_Interface
     ipprotocol: inet
     source: NET:lan
     destination: NET:DMZ_Interface
 
   - name: "Block LAN to Management"
     action: block
-    interface: lan
+    interface: LAN_Interface
     ipprotocol: inet
     source: NET:lan
     destination: NET:Management_Interface
 
   - name: "Block LAN to pfSense WebGUI"
     action: block
-    interface: lan
+    interface: LAN_Interface
     ipprotocol: inet
     protocol: tcp
     source: NET:lan
@@ -133,7 +133,7 @@ firewall_rules:
 
   - name: "Allow LAN to Internet"
     action: pass
-    interface: lan
+    interface: LAN_Interface
     ipprotocol: inet
     source: NET:lan
     destination: any
