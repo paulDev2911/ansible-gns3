@@ -70,29 +70,6 @@
         destination: any
         state: present
 
-    - name: "Allow NAT-T (UDP 4500)"
-      pfsensible.core.pfsense_rule:
-        name: "Allow NAT-T from existing site"
-        action: pass
-        interface: "VPN_Interface"
-        ipprotocol: inet
-        protocol: udp
-        source: "10.1.1.10"
-        destination: "10.1.1.20"
-        destination_port: "4500"
-        state: present
-
-    - name: "Allow IPSec ESP"
-      pfsensible.core.pfsense_rule:
-        name: "Allow ESP from existing site"
-        action: pass
-        interface: "VPN_Interface"
-        ipprotocol: inet
-        protocol: esp
-        source: "10.1.1.10"
-        destination: "10.1.1.20"
-        state: present
-
     - name: "Allow traffic through tunnel from existing site"
       pfsensible.core.pfsense_rule:
         name: "Allow existing site to new site"

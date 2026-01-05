@@ -58,14 +58,13 @@
       cisco.ios.ios_l2_interfaces:
         config:
           - name: "{{ item.interface }}"
-            mode: access
-            access:
-              vlan: "{{ item.data_vlan }}"
-            voice:
-              vlan: "{{ item.voice_vlan }}"
+            mode: trunk
+            trunk:
+              allowed_vlans: "{{ item.voice_vlan }}"
+              native_vlan: "{{ item.data_vlan }}"
+              encapsulation: "dot1q"
         state: merged
       loop: "{{ voice_access_ports }}"
-      when: voice_access_ports is defined
 
     - name: Configure data-only access ports
       cisco.ios.ios_l2_interfaces:

@@ -38,21 +38,6 @@ vpn_interfaces:
   - descr: "Tunnel_Interface"
     interface: "ipsec1"
     enable: true
-#vpn_firewall_rules:
-#  - name: "Allow IKE from {{ remote_site_name }}"
-#    protocol: "udp"
-#    port: "500"
-#    description: "IKE negotiation traffic"
-  
-#  - name: "Allow NAT-T from {{ remote_site_name }}"
-#    protocol: "udp"
-#    port: "4500"
-#    description: "NAT Traversal for IPSec"
-#  
-#  - name: "Allow ESP from {{ remote_site_name }}"
-#    protocol: "esp"
-#    port: null
-#    description: "ESP protocol for IPSec tunnel"
 
 tunnel_traffic_rules:
   remote_to_local:
