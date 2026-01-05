@@ -110,7 +110,7 @@ firewall_rules:
 
   - name: "Block LAN to DMZ"
     action: block
-    interface: LAN_Interface_Interface
+    interface: LAN_Interface
     ipprotocol: inet
     source: NET:lan
     destination: NET:DMZ_Interface
