@@ -1,4 +1,5 @@
 ---
+# Pfsense Settings 
 hostname: "pfsense"
 domain: "test.local"
 timezone: "Europe/Berlin"
@@ -6,7 +7,8 @@ language: "de_DE"
 timeservers: "pool.ntp.org"
 pfsense_admin_username: operator
 pfsense_admin_password: "$2a$12$u/3KWu3C1QY5/UGHEiT6k.b7qzhmKfvXIEpVDRKjn0hiRsH7yHQrW"
-#webgui_theme: "pfsense-dark"
+
+# Pfsense Interfaces
 
 pfsense_interfaces:
   - descr: "LAN_Interface"
@@ -44,11 +46,6 @@ pfsense_interfaces:
     ipv4_type: "static"
     ipv6_type: none
     enable: true
-  
-vpn_interfaces:
-  - descr: "Tunnel_Interface"
-    interface: "ipsec1"
-    enable: true
 
 pfsense_dhcp_servers:
   - interface: "em1"
@@ -67,6 +64,16 @@ pfsense_dhcp_servers:
     range_to: "172.16.2.200"
     netmask: "255.255.255.0"
     gateway: "172.16.1.1"
+    domain: "{{ domain }}"
+    defaultleasetime: 86400
+    maxleasetime: 172800
+
+  - interface: "em3"
+    enable: true
+    range_from: "172.16.3.100"
+    range_to: "172.16.3.200"
+    netmask: "255.255.255.0"
+    gateway: "172.16.3.1"
     domain: "{{ domain }}"
     defaultleasetime: 86400
     maxleasetime: 172800

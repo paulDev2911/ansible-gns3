@@ -34,6 +34,10 @@ local_network: "192.168.1.0/24"
 
 remote_network: "192.168.2.0/24"
 
+vpn_interfaces:
+  - descr: "Tunnel_Interface"
+    interface: "ipsec1"
+    enable: true
 #vpn_firewall_rules:
 #  - name: "Allow IKE from {{ remote_site_name }}"
 #    protocol: "udp"

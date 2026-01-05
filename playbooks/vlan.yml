@@ -86,3 +86,10 @@
         state: merged
       loop: "{{ disabled_ports }}"
       when: disabled_ports is defined
+
+    - name: Remove unused VLANs
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 100
+          - vlan_id: 200
+        state: deleted

@@ -6,22 +6,22 @@ trunk_ports:
 # Ports with PC and VoIP phone
 voice_access_ports:
   - interface: "GigabitEthernet0/1"
-    data_vlan: 10
+    data_vlan: 1
     voice_vlan: 20
   - interface: "GigabitEthernet0/2"
-    data_vlan: 10
+    data_vlan: 1
     voice_vlan: 20
   - interface: "GigabitEthernet0/3"
-    data_vlan: 10
+    data_vlan: 1
     voice_vlan: 20
 
 # Ports with only PC (no phone)
 data_only_ports:
   - interface: "GigabitEthernet1/0"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet1/1"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet1/2"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet1/3"
-    vlan: 10
+    vlan: 1

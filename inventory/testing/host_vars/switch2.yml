@@ -5,16 +5,16 @@ trunk_ports:
 
 data_only_ports:
   - interface: "GigabitEthernet0/1"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet0/2"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet0/3"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet1/0"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet1/1"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet1/2"
-    vlan: 10
+    vlan: 1
   - interface: "GigabitEthernet1/3"
-    vlan: 10
+    vlan: 1
