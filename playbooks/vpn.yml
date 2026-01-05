@@ -16,7 +16,7 @@
         peerid_type: "{{ p1_peerid_type }}"
         lifetime: "{{ p1_lifetime }}"
         nat_traversal: "{{ p1_nat_traversal }}"
-        dpd_delay: "{{ p1_maxfail }}"
+        dpd_delay: "{{ p1_dpd_maxfail }}"
         dpd_maxfail: "{{ p1_dpd_maxfail }}"
         apply: true
 
