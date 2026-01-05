@@ -112,14 +112,14 @@ firewall_rules:
     action: block
     interface: LAN_Interface
     ipprotocol: inet
-    source: NET:lan
+    source: NET:LAN_Interface
     destination: NET:DMZ_Interface
 
   - name: "Block LAN to Management"
     action: block
     interface: LAN_Interface
     ipprotocol: inet
-    source: NET:lan
+    source: NET:LAN_Interface
     destination: NET:Management_Interface
 
   - name: "Block LAN to pfSense WebGUI"
@@ -127,7 +127,7 @@ firewall_rules:
     interface: LAN_Interface
     ipprotocol: inet
     protocol: tcp
-    source: NET:lan
+    source: NET:LAN_Interface
     destination: "192.168.1.1"
     destination_port: "443"
 
@@ -135,7 +135,7 @@ firewall_rules:
     action: pass
     interface: LAN_Interface
     ipprotocol: inet
-    source: NET:lan
+    source: NET:LAN_Interface
     destination: any
 
   - name: "Block Printer VLAN to LAN"
