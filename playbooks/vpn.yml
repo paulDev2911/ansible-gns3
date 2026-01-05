@@ -59,17 +59,6 @@
         network: "192.168.2.0/24"
         state: present
 
-    - name: "Allow all through VPN"
-      pfsensible.core.pfsense_rule:
-        name: "Allow all through VPN"
-        action: pass
-        interface: "VPN_Interface"
-        ipprotocol: inet
-        protocol: any
-        source: any
-        destination: any
-        state: present
-
     - name: "Allow traffic through tunnel from existing site"
       pfsensible.core.pfsense_rule:
         name: "Allow existing site to new site"
@@ -84,7 +73,7 @@
       pfsensible.core.pfsense_rule:
         name: "Allow new site to existing site"
         action: pass
-        interface: lan
+        interface: LAN_Interface
         ipprotocol: inet
         source: "192.168.1.0/24"
         destination: "192.168.2.0/24"
