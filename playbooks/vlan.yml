@@ -65,6 +65,7 @@
               encapsulation: "dot1q"
         state: merged
       loop: "{{ voice_access_ports }}"
+      when: data_only_ports is defined
 
     - name: Configure data-only access ports
       cisco.ios.ios_l2_interfaces:
