@@ -180,6 +180,13 @@ firewall_rules:
     source: "192.168.20.0/24"
     destination: NET:lan
 
+  - name: "Allow VoIP Devices to VoIP Server"
+    action: pass
+    interface: voice_Interface
+    ipprotocol: inet
+    source: NET:voice_Interface
+    destination: 172.16.2.13
+
   - name: "Block Voice VLAN to DMZ"
     action: block
     interface: voice_Interface
