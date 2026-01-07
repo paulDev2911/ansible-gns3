@@ -143,7 +143,7 @@ firewall_rules:
     interface: Printer_Interface
     ipprotocol: inet
     source: "192.168.10.0/24"
-    destination: NET:lan
+    destination: NET:LAN_Interface
 
   - name: "Block Printer VLAN to DMZ"
     action: block
@@ -178,7 +178,7 @@ firewall_rules:
     interface: voice_Interface
     ipprotocol: inet
     source: "192.168.20.0/24"
-    destination: NET:lan
+    destination: NET:LAN_Interface
 
   - name: "Allow VoIP Devices to VoIP Server"
     action: pass

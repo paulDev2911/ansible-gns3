@@ -23,5 +23,8 @@ data_only_ports:
     vlan: 1
   - interface: "GigabitEthernet1/2"
     vlan: 1
+
+
+printer_ports:
   - interface: "GigabitEthernet1/3"
     vlan: 1
