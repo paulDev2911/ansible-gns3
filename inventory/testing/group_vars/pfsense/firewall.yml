@@ -173,6 +173,13 @@ firewall_rules:
     source: "192.168.10.0/24"
     destination: "192.168.10.1"
 
+  - name: "Allow LAN to Printer"
+    action: pass
+    interface: LAN_Interface
+    ipprotocol: inet
+    source: NET:LAN_Interface
+    destination: NET:Printer_Interface
+
   - name: "Block Voice VLAN to LAN"
     action: block
     interface: voice_Interface
